@@ -19,22 +19,20 @@ UHealthComponent::UHealthComponent()
 void UHealthComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
-	AActor* Owner = GetOwner();
-
-	if (Owner)
-	{
-		Owner->OnTakeAnyDamage.AddDynamic(this, &UHealthComponent::TakeDamage);
-	}
-	// ...
-	
 }
 
-void UHealthComponent::TakeDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
+void UHealthComponent::Damage(float Damage)
 {
 	float OldHealth = Health;
 	Health -= Damage - Armor;
+
 	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Lost Health!"));
-	OnHealthChange.Broadcast(MaxHealth, Health, OldHealth);
+
+	FOnHealthChangePayload eventPayload;
+	eventPayload.MaximumHealth = MaxHealth;
+	eventPayload.NewHealth = Health;
+	eventPayload.OldHealth = OldHealth;
+
+	OnHealthChange.Broadcast(eventPayload);
 }
 

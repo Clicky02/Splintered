@@ -6,8 +6,20 @@
 #include "Components/ActorComponent.h"
 #include "HealthComponent.generated.h"
 
+USTRUCT(BlueprintType)
+struct FOnHealthChangePayload
+{
+	GENERATED_BODY()
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnHealthChange, float, MaximumHealth, float, NewHealth, float, OldHealth);
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Health Change")
+	float MaximumHealth;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Health Change")
+	float NewHealth;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Health Change")
+	float OldHealth;
+};
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnHealthChange, const FOnHealthChangePayload&, Payload);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class GRAVITYDIRECTIVE_API UHealthComponent : public UActorComponent
@@ -34,11 +46,11 @@ public:
 	// Sets default values for this component's properties
 	UHealthComponent();
 
+	UFUNCTION()
+	void Damage(float Damage);
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
-
-	UFUNCTION()
-	void TakeDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
 
 };

@@ -10,7 +10,12 @@
 		}
 	],
 	"settings": {
-		"typescript.tsc.autoDetect": "off"
+		"typescript.tsc.autoDetect": "off",
+		"C_Cpp.default.forcedInclude": [
+			"${default}",
+			"C:\\Users\\Gareth\\Documents\\Unreal Projects\\GravityDirective 5.0 5.0\\Intermediate\\Build\\Win64\\UnrealEditor\\Development\\GravityDirective\\Definitions.GravityDirective.h",
+			"C:\\Users\\Gareth\\Documents\\Unreal Projects\\GravityDirective 5.0 5.0\\Intermediate\\Build\\Win64\\GravityDirectiveEditor\\Development\\Engine\\SharedPCH.Engine.ShadowErrors.h"
+		]
 	},
 	"extensions": {
 		"recommendations": [
