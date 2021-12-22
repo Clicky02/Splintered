@@ -21,8 +21,10 @@ struct FBeginControlPayload
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Control Functions")
 	AActor* Player;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Control Functions")
+	UStaticMeshComponent* Hand;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Control Functions")
-	HandSide handSide;
+	HandSide HandSide;
 };
 
 // This class does not need to be modified.

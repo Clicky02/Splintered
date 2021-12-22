@@ -2,7 +2,7 @@
 
 
 #include "CollisionDamageComponent.h"
-#include <GravityDirective/HealthComponent.h>
+#include "HealthComponent.h"
 
 // Sets default values for this component's properties
 UCollisionDamageComponent::UCollisionDamageComponent()
@@ -10,8 +10,6 @@ UCollisionDamageComponent::UCollisionDamageComponent()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = false;
-
-	UE_LOG(LogTemp, Warning, TEXT("start"));
 	// ...
 }
 
@@ -20,8 +18,6 @@ UCollisionDamageComponent::UCollisionDamageComponent()
 void UCollisionDamageComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
-	UE_LOG(LogTemp, Warning, TEXT("PLAY"));
 
 }
 
@@ -48,16 +44,6 @@ void UCollisionDamageComponent::Grab(UPrimitiveComponent* SimObject)
 	
 	SimulatedObject = SimObject;
 
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Setup!"));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Setup"));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Setup"));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Setup"));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Setup"));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Setup"));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Setup"));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Setup"));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Setup"));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Setup"));
 }
 
 void UCollisionDamageComponent::Drop()
@@ -80,16 +66,7 @@ void UCollisionDamageComponent::Drop()
 
 void UCollisionDamageComponent::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("COLLIDERS"));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("COLLIDERS"));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("COLLIDERS"));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("COLLIDERS"));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("COLLIDERS"));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("COLLIDERS"));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("COLLIDERS"));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("COLLIDERS"));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("COLLIDERS"));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("COLLIDERS"));
+
 }
 
 /*
@@ -109,11 +86,9 @@ void UCollisionDamageComponent::OnCollide(UPrimitiveComponent* HitComponent, AAc
 
 		UStaticMeshComponent* mesh = OtherActor->FindComponentByClass<UStaticMeshComponent>();
 
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("COLL"));
 
 		if (mesh != nullptr)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, (Hit.ImpactNormal *  -Knockback).ToString());
 			mesh->AddForce(Hit.ImpactNormal *  -Knockback);
 		}
 

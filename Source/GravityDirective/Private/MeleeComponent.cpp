@@ -2,7 +2,7 @@
 
 
 #include "MeleeComponent.h"
-#include <GravityDirective/HealthComponent.h>
+#include "HealthComponent.h"
 
 // Sets default values for this component's properties
 UMeleeComponent::UMeleeComponent()
@@ -11,7 +11,6 @@ UMeleeComponent::UMeleeComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = false;
 
-	UE_LOG(LogTemp, Warning, TEXT("start"));
 	// ...
 }
 
@@ -20,9 +19,6 @@ UMeleeComponent::UMeleeComponent()
 void UMeleeComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
-	UE_LOG(LogTemp, Warning, TEXT("PLAY"));
-
 }
 
 
@@ -34,7 +30,6 @@ void UMeleeComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 
 void UMeleeComponent::GrabMeleeComponent(UPrimitiveComponent* SimObject)
 {
-
 	if (bIsOnHit)
 	{
 		SimObject->OnComponentHit.AddDynamic(this, &UMeleeComponent::OnCollide);
@@ -47,22 +42,10 @@ void UMeleeComponent::GrabMeleeComponent(UPrimitiveComponent* SimObject)
 	}
 	
 	SimulatedObject = SimObject;
-
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Setup!"));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Setup"));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Setup"));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Setup"));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Setup"));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Setup"));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Setup"));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Setup"));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Setup"));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Setup"));
 }
 
 void UMeleeComponent::DropMeleeComponent()
 {
-
 	if (bIsOnHit)
 	{
 		SimulatedObject->OnComponentHit.RemoveDynamic(this, &UMeleeComponent::OnCollide);
@@ -80,16 +63,7 @@ void UMeleeComponent::DropMeleeComponent()
 
 void UMeleeComponent::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("COLLIDERS"));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("COLLIDERS"));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("COLLIDERS"));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("COLLIDERS"));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("COLLIDERS"));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("COLLIDERS"));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("COLLIDERS"));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("COLLIDERS"));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("COLLIDERS"));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("COLLIDERS"));
+
 }
 
 /*
@@ -100,17 +74,12 @@ void UMeleeComponent::OnOverlapEnd(AActor* OverlappedActor, AActor* OtherActor)
 
 void UMeleeComponent::OnCollide(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-
 	OtherActor->TakeDamage(Damage, FDamageEvent(), nullptr, GetOwner());
-
 
 	UStaticMeshComponent* mesh = OtherActor->FindComponentByClass<UStaticMeshComponent>();
 
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("COLL"));
-
 	if (mesh != nullptr)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, (Hit.ImpactNormal *  -Knockback).ToString());
 		mesh->AddForce(Hit.ImpactNormal *  -Knockback);
 	}
 }
