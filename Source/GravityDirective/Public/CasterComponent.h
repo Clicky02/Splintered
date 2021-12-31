@@ -38,12 +38,16 @@ protected:
 
 public:	
 
+	UPROPERTY(VisibleAnywhere)
 	USpell* PrimarySpell;
 
+	UPROPERTY(VisibleAnywhere)
 	USpell* UpwardSpell;
 
+	UPROPERTY(VisibleAnywhere)
 	USpell* DownwardSpell;
 
+	UPROPERTY(VisibleAnywhere)
 	USpell* BlockingSpell;
 
 
