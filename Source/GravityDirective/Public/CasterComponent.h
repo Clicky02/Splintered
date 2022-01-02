@@ -59,10 +59,6 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-	void GiveSpellAbility(USpell* Spell);
-
-	void RemoveSpellAbility(USpell* Spell);
-
 public:	
 
 	virtual void BeginControl_Implementation(const FBeginControlPayload& Payload) override;

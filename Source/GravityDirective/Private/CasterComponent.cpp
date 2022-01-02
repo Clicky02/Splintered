@@ -23,31 +23,6 @@ void UCasterComponent::BeginPlay()
 	
 }
 
-void UCasterComponent::GiveSpellAbility(USpell* Spell)
-{
-	if (ConnectedAbilitySystem)
-	{
-		if (Player->HasAuthority() && Spell)
-		{
-			Spell->SpellSpecHandle = ConnectedAbilitySystem->GiveAbility(FGameplayAbilitySpec(Spell->SpellType.GetDefaultObject(), Spell->Level, 0));
-		}
-	}
-
-}
-
-void UCasterComponent::RemoveSpellAbility(USpell* Spell)
-{
-	if (ConnectedAbilitySystem)
-	{
-		if (Player->HasAuthority() && Spell->SpellSpecHandle.IsValid() && Spell)
-		{
-			ConnectedAbilitySystem->ClearAbility(Spell->SpellSpecHandle);
-			Spell->SpellSpecHandle = FGameplayAbilitySpecHandle();
-		}
-	}
-
-}
-
 
 // Called every frame
 void UCasterComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -64,7 +39,7 @@ void UCasterComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 			float DeltaZ = CurrentPosition.Z - StartPosition.Z;
 			if (DeltaZ < MIN_UPWARD_DISTANCE)
 			{
-				ConnectedAbilitySystem->CancelAbilityHandle(UpwardSpell->SpellSpecHandle);
+				//ConnectedAbilitySystem->CancelAbilityHandle(UpwardSpell->SpellSpecHandle);
 				bIsCasting = false;
 				CastingSlot = ESpellSlot::None;
 			}
@@ -78,7 +53,7 @@ void UCasterComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 		float DeltaZ = CurrentPosition.Z - StartPosition.Z;
 		if (UpwardSpell && DeltaZ > MIN_UPWARD_DISTANCE)
 		{
-			ConnectedAbilitySystem->TryActivateAbilityByClass(UpwardSpell->SpellType);
+			//ConnectedAbilitySystem->TryActivateAbilityByClass(UpwardSpell->SpellType);
 			bIsCasting = true;
 			CastingSlot = ESpellSlot::Upward;
 		}
@@ -106,26 +81,20 @@ void UCasterComponent::SetSpell(USpell* Spell)
 	{
 		switch (Spell->SpellSlot) {
 		case ESpellSlot::Primary:
-			if (PrimarySpell) RemoveSpellAbility(PrimarySpell);
 			PrimarySpell = Spell;
 			break;
 		case ESpellSlot::Upward:
-			if (UpwardSpell) RemoveSpellAbility(UpwardSpell);
 			UpwardSpell = Spell;
 			break;
 		case ESpellSlot::Downward:
-			if (DownwardSpell) RemoveSpellAbility(DownwardSpell);
 			DownwardSpell = Spell;
 			break;
 		case ESpellSlot::Block:
-			if (BlockingSpell) RemoveSpellAbility(BlockingSpell);
 			BlockingSpell = Spell;
 			break;
 		default:
 			return;
 		}
-
-		GiveSpellAbility(Spell);
 	}
 }
 
@@ -133,19 +102,15 @@ void UCasterComponent::RemoveSpell(ESpellSlot Slot)
 {
 	switch (Slot) {
 	case ESpellSlot::Primary:
-		if (PrimarySpell) RemoveSpellAbility(PrimarySpell);
 		PrimarySpell = nullptr;
 		break;
 	case ESpellSlot::Upward:
-		if (UpwardSpell) RemoveSpellAbility(UpwardSpell);
 		UpwardSpell = nullptr;
 		break;
 	case ESpellSlot::Downward:
-		if (DownwardSpell) RemoveSpellAbility(DownwardSpell);
 		DownwardSpell = nullptr;
 		break;
 	case ESpellSlot::Block:
-		if (BlockingSpell) RemoveSpellAbility(BlockingSpell);
 		BlockingSpell = nullptr;
 		break;
 	default:
@@ -169,11 +134,6 @@ void UCasterComponent::BeginControl_Implementation(const FBeginControlPayload& P
 
 	Player = Payload.Player;
 	ConnectedHand = Payload.Hand;
-
-	if (PrimarySpell) GiveSpellAbility(PrimarySpell);
-	if (UpwardSpell) GiveSpellAbility(UpwardSpell);
-	if (DownwardSpell) GiveSpellAbility(DownwardSpell);
-	if (BlockingSpell) GiveSpellAbility(BlockingSpell);
 	
 }
 

@@ -3,14 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "BaseAbility.h"
 #include "BaseSpell.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class GRAVITYDIRECTIVE_API UBaseSpell : public UBaseAbility
+class GRAVITYDIRECTIVE_API UBaseSpell : public UObject
 {
 	GENERATED_BODY()
 	
