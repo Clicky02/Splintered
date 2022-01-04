@@ -2,4 +2,8 @@
 
 
 #include "BaseSpell.h"
+#include "..\Public\BaseSpell.h"
 
+UBaseSpell::UBaseSpell()
+{
+}
