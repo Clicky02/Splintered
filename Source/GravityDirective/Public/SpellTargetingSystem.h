@@ -7,7 +7,7 @@
 #include "SpellTargetingSystem.generated.h"
 
 USTRUCT(BlueprintType)
-struct FActivatePayload
+struct FTargetingActivatePayload
 {
 	GENERATED_BODY()
 
@@ -52,18 +52,18 @@ protected:
 
 public:
 
-	UFUNCTION(BlueprintNativeEvent, Category = "Targeting")
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Targeting")
 	void Init(class UBaseSpell* SpellInstance);
 
-	UFUNCTION(BlueprintNativeEvent, Category = "Targeting")
-	void Activate(const FActivatePayload& Payload);
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Targeting")
+	void Activate(const FTargetingActivatePayload& Payload);
 
-	UFUNCTION(BlueprintNativeEvent, Category = "Targeting")
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Targeting")
 	void StartTargeting();
 
-	UFUNCTION(BlueprintNativeEvent, Category = "Targeting")
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Targeting")
 	void TickTargeting();
 
-	UFUNCTION(BlueprintNativeEvent, Category = "Targeting")
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Targeting")
 	void EndTargeting();
 };

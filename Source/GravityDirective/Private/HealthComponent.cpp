@@ -28,11 +28,13 @@ void UHealthComponent::Damage(float Damage)
 
 	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Lost Health!"));
 
+	/*
 	FOnHealthChangePayload eventPayload;
 	eventPayload.MaximumHealth = MaxHealth;
 	eventPayload.NewHealth = Health;
 	eventPayload.OldHealth = OldHealth;
 
 	OnHealthChange.Broadcast(eventPayload);
+	*/
 }
 

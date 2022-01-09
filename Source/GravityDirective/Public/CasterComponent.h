@@ -8,7 +8,6 @@
 #include "BaseSpell.h"
 #include "Spell.h"
 #include "SpellSlot.h"
-#include "AbilitySystemComponent.h"
 #include "Math/Vector.h"
 #include "CasterComponent.generated.h"
 
@@ -18,11 +17,10 @@ class GRAVITYDIRECTIVE_API UCasterComponent : public UActorComponent, public IHe
 {
 	GENERATED_BODY()
 		
-	const float MIN_UPWARD_DISTANCE = 0.1;
-
-	FVector StartPosition;
 
 	bool bIsActivated = false;
+
+	bool bIsPrimed = false;
 
 	bool bIsCasting = false;
 
@@ -30,25 +28,23 @@ class GRAVITYDIRECTIVE_API UCasterComponent : public UActorComponent, public IHe
 
 protected:
 
-	UAbilitySystemComponent* ConnectedAbilitySystem;
-
 	AActor* Player;
 
 	UStaticMeshComponent* ConnectedHand;
 
 public:	
 
-	UPROPERTY(VisibleAnywhere)
-	USpell* PrimarySpell;
+	UPROPERTY(VisibleAnywhere, Instanced)
+	UBaseSpell* PrimarySpell;
 
-	UPROPERTY(VisibleAnywhere)
-	USpell* UpwardSpell;
+	UPROPERTY(VisibleAnywhere, Instanced)
+	UBaseSpell* UpwardSpell;
 
-	UPROPERTY(VisibleAnywhere)
-	USpell* DownwardSpell;
+	UPROPERTY(VisibleAnywhere, Instanced)
+	UBaseSpell* DownwardSpell;
 
-	UPROPERTY(VisibleAnywhere)
-	USpell* BlockingSpell;
+	UPROPERTY(VisibleAnywhere, Instanced)
+	UBaseSpell* BlockingSpell;
 
 
 	// Sets default values for this component's properties
@@ -58,6 +54,10 @@ protected:
 
 	// Called when the game starts
 	virtual void BeginPlay() override;
+
+	inline void PrimeAll();
+
+	inline void UnprimeAll();
 
 public:	
 
@@ -73,12 +73,14 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	UFUNCTION(BlueprintCallable, Category = "Caster")
-	void SetSpell(USpell* Spell);
+	void SetSpell(UBaseSpell* Spell);
 
 	UFUNCTION(BlueprintCallable, Category = "Caster")
 	void RemoveSpell(ESpellSlot Slot);
 
 	UFUNCTION(BlueprintCallable, Category = "Caster")
-	USpell* GetSpell(ESpellSlot Slot);
+	UBaseSpell* GetSpell(ESpellSlot Slot);
 
+	UFUNCTION(BlueprintCallable, Category = "Caster")
+	void SetCasting(ESpellSlot SpellSlot, bool IsCasting);
 };

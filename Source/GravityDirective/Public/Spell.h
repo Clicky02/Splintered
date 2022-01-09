@@ -31,6 +31,4 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Spell")
 	void Init(ESpellSlot IntialSpellSlot, TSubclassOf<UBaseSpell> IntialSpellType, int32 IntialLevel);
 
-	UFUNCTION(BlueprintCallable, Category = "Caster")
-	static USpell* CreateSpell(ESpellSlot IntialSpellSlot, TSubclassOf<UBaseSpell> IntialSpellType, int32 IntialLevel, UObject* JustPutThis);
 };

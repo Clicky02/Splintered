@@ -23,44 +23,36 @@ void UCasterComponent::BeginPlay()
 	
 }
 
+inline void UCasterComponent::PrimeAll()
+{
+	if (PrimarySpell) PrimarySpell->Prime();
+	if (UpwardSpell) UpwardSpell->Prime();
+	if (DownwardSpell) DownwardSpell->Prime();
+	if (BlockingSpell) BlockingSpell->Prime();
+}
+
+inline void UCasterComponent::UnprimeAll()
+{
+	if (PrimarySpell) PrimarySpell->Unprime();
+	if (UpwardSpell) UpwardSpell->Unprime();
+	if (DownwardSpell) DownwardSpell->Unprime();
+	if (BlockingSpell) BlockingSpell->Unprime();
+}
+
+
 
 // Called every frame
 void UCasterComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (bIsCasting)
-	{
-		FVector CurrentPosition = GetOwner()->GetActorLocation();
-
-		// Upward Continuation 
-		if (CastingSlot == ESpellSlot::Upward)
-		{
-			float DeltaZ = CurrentPosition.Z - StartPosition.Z;
-			if (DeltaZ < MIN_UPWARD_DISTANCE)
-			{
-				//ConnectedAbilitySystem->CancelAbilityHandle(UpwardSpell->SpellSpecHandle);
-				bIsCasting = false;
-				CastingSlot = ESpellSlot::None;
-			}
-		}
-	} 
-	else if (bIsActivated)
-	{
-		FVector CurrentPosition = GetOwner()->GetActorLocation();
-
-		// Upward Activation 
-		float DeltaZ = CurrentPosition.Z - StartPosition.Z;
-		if (UpwardSpell && DeltaZ > MIN_UPWARD_DISTANCE)
-		{
-			//ConnectedAbilitySystem->TryActivateAbilityByClass(UpwardSpell->SpellType);
-			bIsCasting = true;
-			CastingSlot = ESpellSlot::Upward;
-		}
-	}
+	if (PrimarySpell) PrimarySpell->Tick();
+	if (UpwardSpell) UpwardSpell->Tick();
+	if (DownwardSpell) DownwardSpell->Tick();
+	if (BlockingSpell) BlockingSpell->Tick();
 }
 
-USpell* UCasterComponent::GetSpell(ESpellSlot Slot) {
+UBaseSpell* UCasterComponent::GetSpell(ESpellSlot Slot) {
 	switch (Slot) {
 	case ESpellSlot::Primary:
 		return PrimarySpell;
@@ -75,11 +67,31 @@ USpell* UCasterComponent::GetSpell(ESpellSlot Slot) {
 	}
 }
 
-void UCasterComponent::SetSpell(USpell* Spell)
+void UCasterComponent::SetCasting(ESpellSlot SpellSlot, bool IsCasting)
+{
+
+	if (!bIsCasting && IsCasting) 
+	{
+		bIsCasting = IsCasting;
+		if (PrimarySpell && SpellSlot != ESpellSlot::Primary) PrimarySpell->Unprime();
+		if (UpwardSpell && SpellSlot != ESpellSlot::Upward) UpwardSpell->Unprime();
+		if (DownwardSpell && SpellSlot != ESpellSlot::Downward) DownwardSpell->Unprime();
+		if (BlockingSpell && SpellSlot != ESpellSlot::Block) BlockingSpell->Unprime();
+	}
+	else if (bIsCasting && !IsCasting)
+	{
+		bIsCasting = IsCasting;
+		PrimeAll();
+	}
+
+	
+}
+
+void UCasterComponent::SetSpell(UBaseSpell* Spell)
 {
 	if (Spell)
 	{
-		switch (Spell->SpellSlot) {
+		switch (Spell->GetSpellSlot()) {
 		case ESpellSlot::Primary:
 			PrimarySpell = Spell;
 			break;
@@ -95,27 +107,62 @@ void UCasterComponent::SetSpell(USpell* Spell)
 		default:
 			return;
 		}
+		
+		if (bIsActivated)
+		{
+			FSpellActivatePayload Payload;
+			Payload.Wielder = Player;
+			Payload.CasterComponent = this;
+			Payload.CasterActor = this->GetOwner();
+
+			Spell->Activate(Payload);
+		}
+
+		if (bIsPrimed)
+		{
+			Spell->Prime();
+		}
 	}
 }
 
 void UCasterComponent::RemoveSpell(ESpellSlot Slot)
 {
+	UBaseSpell* Spell;
+
 	switch (Slot) {
 	case ESpellSlot::Primary:
+		Spell = PrimarySpell;
 		PrimarySpell = nullptr;
 		break;
 	case ESpellSlot::Upward:
+		Spell = UpwardSpell;
 		UpwardSpell = nullptr;
 		break;
 	case ESpellSlot::Downward:
+		Spell = DownwardSpell;
 		DownwardSpell = nullptr;
 		break;
 	case ESpellSlot::Block:
+		Spell = BlockingSpell;
 		BlockingSpell = nullptr;
 		break;
 	default:
 		return;
 	}
+
+	if (Spell)
+	{
+		if (bIsActivated)
+		{
+			Spell->Deactivate();
+		}
+
+		if (bIsPrimed)
+		{
+			Spell->Unprime();
+		}
+	}
+
 }
 
 
@@ -124,35 +171,51 @@ void UCasterComponent::BeginControl_Implementation(const FBeginControlPayload& P
 {
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Control"));
 
-	TArray<UActorComponent*> ConnectedAbilitySystems = Payload.Player->GetComponentsByClass(UAbilitySystemComponent::StaticClass());
-
-	if (ConnectedAbilitySystems.Num() <= 0) return;
-	
-	ConnectedAbilitySystem = dynamic_cast<UAbilitySystemComponent*>(ConnectedAbilitySystems[0]);
-
-	if (ConnectedAbilitySystem == nullptr) return;
-
 	Player = Payload.Player;
 	ConnectedHand = Payload.Hand;
+
+	FSpellActivatePayload ActivatePayload;
+	ActivatePayload.Wielder = Player;
+	ActivatePayload.CasterComponent = this;
+	ActivatePayload.CasterActor = this->GetOwner();
+
+	if (PrimarySpell) PrimarySpell->Activate(ActivatePayload);
+	if (UpwardSpell) UpwardSpell->Activate(ActivatePayload);
+	if (DownwardSpell) DownwardSpell->Activate(ActivatePayload);
+	if (BlockingSpell) BlockingSpell->Activate(ActivatePayload);
 	
 }
 
 void UCasterComponent::EndControl_Implementation()
 {
-	ConnectedAbilitySystem = nullptr;
 	Player = nullptr;
-	bIsActivated = false;
 	CastingSlot = ESpellSlot::None;
-	bIsCasting = false;
+
+	if (bIsPrimed)
+	{
+		UnprimeAll();
+
+		if (PrimarySpell) PrimarySpell->Deactivate();
+		if (UpwardSpell) UpwardSpell->Deactivate();
+		if (DownwardSpell) DownwardSpell->Deactivate();
+		if (BlockingSpell) BlockingSpell->Deactivate();
+	}
+
+	bIsActivated = false;
+	bIsPrimed = false;
+	
 }
 
 void UCasterComponent::PrimaryPressed_Implementation()
 {
-	bIsActivated = true;
-	StartPosition = GetOwner()->GetActorLocation();
+	bIsPrimed = true;
+
+	PrimeAll();
 }
 
 void UCasterComponent::PrimaryReleased_Implementation()
 {
-	bIsActivated = false;
+	bIsPrimed = false;
+
+	UnprimeAll();
 }

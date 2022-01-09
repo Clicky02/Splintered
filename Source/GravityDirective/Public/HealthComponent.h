@@ -6,21 +6,6 @@
 #include "Components/ActorComponent.h"
 #include "HealthComponent.generated.h"
 
-USTRUCT(BlueprintType)
-struct FOnHealthChangePayload
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Health Change")
-	float MaximumHealth;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Health Change")
-	float NewHealth;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Health Change")
-	float OldHealth;
-};
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnHealthChange, const FOnHealthChangePayload&, Payload);
-
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class GRAVITYDIRECTIVE_API UHealthComponent : public UActorComponent
 {
@@ -40,8 +25,6 @@ protected:
 	float Armor = 0.0f;
 
 public:	
-	UPROPERTY(BlueprintAssignable, Category = "Health")
-	FOnHealthChange OnHealthChange;
 
 	// Sets default values for this component's properties
 	UHealthComponent();

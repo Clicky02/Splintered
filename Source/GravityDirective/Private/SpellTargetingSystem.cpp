@@ -3,16 +3,19 @@
 
 #include "SpellTargetingSystem.h"
 
-void USpellTargetingSystem::StartTargeting_Implementation() {
+void USpellTargetingSystem::StartTargeting_Implementation() 
+{
 
 }
 
 void USpellTargetingSystem::TickTargeting_Implementation()
 {
+
 }
 
 void USpellTargetingSystem::EndTargeting_Implementation()
 {
+
 }
 
 UWorld* USpellTargetingSystem::GetWorld() const
@@ -38,7 +41,7 @@ void USpellTargetingSystem::Init_Implementation(UBaseSpell* SpellInstance)
    Spell = SpellInstance;
 }
 
-void USpellTargetingSystem::Activate_Implementation(const FActivatePayload& Payload)
+void USpellTargetingSystem::Activate_Implementation(const FTargetingActivatePayload& Payload)
 {
     Wielder = Payload.Wielder;
     CasterComponent = Payload.CasterComponent;

@@ -9,11 +9,3 @@ void USpell::Init(ESpellSlot IntialSpellSlot, TSubclassOf<UBaseSpell> IntialSpel
 	this->SpellType = IntialSpellType;
 	this->Level = IntialLevel;
 }
-
-USpell* USpell::CreateSpell(ESpellSlot IntialSpellSlot, TSubclassOf<UBaseSpell> IntialSpellType, int32 IntialLevel, UObject* JustPutThis)
-{
-	USpell* NewSpell = NewObject<USpell>(JustPutThis, USpell::StaticClass());
-	NewSpell->Init(IntialSpellSlot, IntialSpellType, IntialLevel);
-
-	return NewSpell;
-}
