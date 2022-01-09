@@ -43,10 +43,10 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spell")
 	bool bIsCasting = false;
 
-	UPROPERTY(VisibleAnywhere, Category = "Spell")
+	UPROPERTY(EditAnywhere, Category = "Spell")
 	ESpellSlot SpellSlot;
 
-	UPROPERTY(VisibleAnywhere, Category = "Spell")
+	UPROPERTY(EditAnywhere, Category = "Spell")
 	int32 Level;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spell")

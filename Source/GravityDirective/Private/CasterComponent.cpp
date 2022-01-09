@@ -89,14 +89,41 @@ void UCasterComponent::SetCasting(ESpellSlot SpellSlot, bool IsCasting)
 
 void UCasterComponent::SetSpell(UBaseSpell* Spell)
 {
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("A"));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("A"));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("A"));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("A"));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("A"));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("A"));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("A"));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("A"));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("A"));
 	if (Spell)
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("B"));
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("B"));
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("B"));
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("b"));
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("b"));
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("b"));
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("b"));
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("b"));
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("b"));
 		switch (Spell->GetSpellSlot()) {
 		case ESpellSlot::Primary:
 			PrimarySpell = Spell;
 			break;
 		case ESpellSlot::Upward:
 			UpwardSpell = Spell;
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("c"));
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("c"));
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("c"));
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("c"));
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("c"));
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("c"));
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("c"));
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("c"));
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("c"));
 			break;
 		case ESpellSlot::Downward:
 			DownwardSpell = Spell;
@@ -170,6 +197,14 @@ void UCasterComponent::RemoveSpell(ESpellSlot Slot)
 void UCasterComponent::BeginControl_Implementation(const FBeginControlPayload& Payload)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Control"));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Control"));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Control"));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Control"));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Control"));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Control"));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Control"));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Control"));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Control"));
 
 	Player = Payload.Player;
 	ConnectedHand = Payload.Hand;
@@ -208,6 +243,16 @@ void UCasterComponent::EndControl_Implementation()
 
 void UCasterComponent::PrimaryPressed_Implementation()
 {
+
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Press"));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Press"));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Press"));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Press"));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Press"));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Press"));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Press"));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Press"));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Press"));
 	bIsPrimed = true;
 
 	PrimeAll();
