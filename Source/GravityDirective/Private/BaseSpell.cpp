@@ -41,40 +41,10 @@ void UBaseSpell::Init_Implementation(ESpellSlot InitialSpellSlot, int32 InitialL
 {
     this->SpellSlot = InitialSpellSlot;
     this->Level = InitialLevel;
-    
-    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Init"));
-    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Init"));
-    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Init"));
-    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Init"));
-    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Init"));
-    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Init"));
-    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Init"));
-    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Init"));
-
-    if (this->SpellSlot == ESpellSlot::Upward)
-    {
-        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Upward"));
-        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Upward"));
-        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Upward"));
-        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Upward"));
-        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Upward"));
-        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Upward"));
-        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Upward"));
-        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Upward"));
-    }
 }
 
 void UBaseSpell::Activate_Implementation(const FSpellActivatePayload& Payload)
 {
-    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Activate"));
-    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Activate"));
-    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Activate"));
-    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Activate"));
-    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Activate"));
-    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Activate"));
-    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Activate"));
-    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Activate"));
-    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Activate"));
 
     Wielder = Payload.Wielder;
     CasterComponent = Payload.CasterComponent;
@@ -133,16 +103,6 @@ void UBaseSpell::Prime()
     bIsPrimed = true;
 
     Activation->StartDetecting();
-
-    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("PRime"));
-    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("PRime"));
-    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("PRime"));
-    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("PRime"));
-    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("PRime"));
-    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("PRime"));
-    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("PRime"));
-    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("PRime"));
-    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("PRime"));
 
 }
 
