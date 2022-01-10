@@ -77,25 +77,33 @@ void UBaseSpell::Tick_Implementation()
 {
     if (bIsPrimed)
     {
-        Activation->Tick();
-        TargetingSystem->TickTargeting();
+        if (Activation) Activation->Tick();
+        if (TargetingSystem) TargetingSystem->TickTargeting();
     }
 }
 
 
 void UBaseSpell::StartTargeting()
 {
-    bIsTargeting = true;
-
     Activation->EndDetecting();
-    TargetingSystem->StartTargeting();
+
+    if (TargetingSystem)
+    {
+        bIsTargeting = true;
+        TargetingSystem->StartTargeting();
+    }
+    else
+    {
+        CastSpell();
+    }
+    
 }
 
 void UBaseSpell::EndTargeting()
 {
     bIsTargeting = false;
 
-    TargetingSystem->EndTargeting();
+    if (TargetingSystem) TargetingSystem->EndTargeting();
 }
 
 void UBaseSpell::Prime()
@@ -110,7 +118,7 @@ void UBaseSpell::Unprime()
 {
     if (bIsTargeting)
     {
-        TargetingSystem->EndTargeting();
+        if (TargetingSystem) TargetingSystem->EndTargeting();
     }
     else if (bIsPrimed && !bIsCasting)
     {
