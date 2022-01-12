@@ -2,7 +2,9 @@
 
 
 #include "CollisionDamageComponent.h"
-#include "HealthComponent.h"
+#include "StatsComponent.h"
+#include "Kismet/GameplayStatics.h"
+
 
 // Sets default values for this component's properties
 UCollisionDamageComponent::UCollisionDamageComponent()
@@ -28,17 +30,14 @@ void UCollisionDamageComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
-void UCollisionDamageComponent::Grab(UPrimitiveComponent* SimObject)
+void UCollisionDamageComponent::Start(UPrimitiveComponent* SimObject)
 {
-
 	if (bIsOnHit)
 	{
 		SimObject->OnComponentHit.AddDynamic(this, &UCollisionDamageComponent::OnCollide);
-		SimObject->OnComponentBeginOverlap.AddDynamic(this, &UCollisionDamageComponent::OnOverlapBegin);
 	}
 	else
 	{
-		SimObject->OnComponentHit.AddDynamic(this, &UCollisionDamageComponent::OnCollide);
 		SimObject->OnComponentBeginOverlap.AddDynamic(this, &UCollisionDamageComponent::OnOverlapBegin);
 	}
 	
@@ -46,17 +45,15 @@ void UCollisionDamageComponent::Grab(UPrimitiveComponent* SimObject)
 
 }
 
-void UCollisionDamageComponent::Drop()
+void UCollisionDamageComponent::End()
 {
 
 	if (bIsOnHit)
 	{
 		SimulatedObject->OnComponentHit.RemoveDynamic(this, &UCollisionDamageComponent::OnCollide);
-		SimulatedObject->OnComponentBeginOverlap.RemoveDynamic(this, &UCollisionDamageComponent::OnOverlapBegin);
 	}
 	else
 	{
-		SimulatedObject->OnComponentHit.RemoveDynamic(this, &UCollisionDamageComponent::OnCollide);
 		SimulatedObject->OnComponentBeginOverlap.RemoveDynamic(this, &UCollisionDamageComponent::OnOverlapBegin);
 	}
 	
@@ -66,7 +63,20 @@ void UCollisionDamageComponent::Drop()
 
 void UCollisionDamageComponent::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	if (OtherActor != this->GetOwner()) 
+	{
+		UStatsComponent* enemyStats = OtherActor->FindComponentByClass<UStatsComponent>();
 
+		float currentTime = UGameplayStatics::GetRealTimeSeconds(GetWorld());
+
+		if (enemyStats != nullptr && currentTime - LastAttackTime > MinTimeBetweenDamage)
+		{
+
+			enemyStats->Damage(Damage);
+			LastAttackTime = currentTime;
+
+		}
+	}
 }
 
 /*
@@ -77,21 +87,26 @@ void UCollisionDamageComponent::OnOverlapEnd(AActor* OverlappedActor, AActor* Ot
 
 void UCollisionDamageComponent::OnCollide(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
+	if (OtherActor != this->GetOwner())
+	{
+		UStatsComponent* enemyStats = OtherActor->FindComponentByClass<UStatsComponent>();
 
-	UHealthComponent* enemyHealth = OtherActor->FindComponentByClass<UHealthComponent>();
+		float currentTime = UGameplayStatics::GetRealTimeSeconds(GetWorld());
 
-	if (enemyHealth != nullptr) {
+		if (enemyStats != nullptr && currentTime - LastAttackTime > MinTimeBetweenDamage) {
 
-		enemyHealth->Damage(Damage);
+			enemyStats->Damage(Damage);
+			LastAttackTime = currentTime;
 
-		UStaticMeshComponent* mesh = OtherActor->FindComponentByClass<UStaticMeshComponent>();
+			UStaticMeshComponent* mesh = OtherActor->FindComponentByClass<UStaticMeshComponent>();
 
 
-		if (mesh != nullptr)
-		{
-			mesh->AddForce(Hit.ImpactNormal *  -Knockback);
+			if (mesh != nullptr)
+			{
+				mesh->AddForce(Hit.ImpactNormal * -Knockback);
+			}
+
 		}
-
 	}
 }
 

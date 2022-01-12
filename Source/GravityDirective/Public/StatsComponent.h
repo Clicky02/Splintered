@@ -18,17 +18,20 @@ protected:
 
 public:
 
-	// The maximum health this actor can have
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Instanced, Category = "Stats")
 	UStat* Health;
 
-	// How much health the actor currently has
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Instanced, Category = "Stats")
 	UStat* Armor;
 
-	// The armor this actor has, which reduces damage taken
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Instanced, Category = "Stats")
 	UStat* Mana;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Instanced, Category = "Stats")
+	UStat* OutgoingDamageModifier;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Instanced, Category = "Stats")
+	UStat* IncomingDamageModifier;
 
 
 public:	
@@ -45,5 +48,8 @@ public:
 
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+	UFUNCTION(BlueprintCallable)
+	virtual void Damage(float Damage);
 
 };

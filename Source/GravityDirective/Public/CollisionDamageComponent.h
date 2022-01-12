@@ -21,18 +21,25 @@ class GRAVITYDIRECTIVE_API UCollisionDamageComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
+private:
+
+	float LastAttackTime = 0;
+
 public:	
 
 	UPrimitiveComponent* SimulatedObject;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Collider")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Collider")
 	bool bIsOnHit = true;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Stats", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats", meta = (AllowPrivateAccess = "true"))
 	float Damage = 10;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Stats", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats", meta = (AllowPrivateAccess = "true"))
 	float Knockback = 1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats", meta = (AllowPrivateAccess = "true"))
+	float MinTimeBetweenDamage = 0;
 
 
 
@@ -49,10 +56,10 @@ public:
 
 
 	UFUNCTION(BlueprintCallable)
-	virtual void Grab(UPrimitiveComponent* SimulatedObject);
+	virtual void Start(UPrimitiveComponent* SimulatedObject);
 
 	UFUNCTION(BlueprintCallable)
-	virtual void Drop();
+	virtual void End();
 
 protected:
 	UFUNCTION()
