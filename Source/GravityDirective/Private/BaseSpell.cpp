@@ -56,13 +56,14 @@ void UBaseSpell::Activate_Implementation(const FSpellActivatePayload& Payload)
     ActivationPayload.CasterActor = CasterActor;  
 
     Activation->Activate(ActivationPayload);
+    if (TargetingSystem) {
+        FTargetingActivatePayload TargetingPayload;
+        TargetingPayload.Wielder = Wielder;
+        TargetingPayload.CasterComponent = CasterComponent;
+        TargetingPayload.CasterActor = CasterActor;
 
-    FTargetingActivatePayload TargetingPayload;
-    TargetingPayload.Wielder = Wielder;
-    TargetingPayload.CasterComponent = CasterComponent;
-    TargetingPayload.CasterActor = CasterActor;
-
-    TargetingSystem->Activate(TargetingPayload);
+        TargetingSystem->Activate(TargetingPayload);
+    }
 }
 
 void UBaseSpell::Deactivate_Implementation()
