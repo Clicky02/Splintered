@@ -11,8 +11,22 @@ UStatsComponent::UStatsComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 
 	Health = CreateDefaultSubobject<UStat>("Health");
+	Health->Name = "Health";
+	Health->IsActive = true;
+
 	Armor = CreateDefaultSubobject<UStat>("Armor");
+	Armor->Name = "Armor";
+
 	Mana = CreateDefaultSubobject<UStat>("Mana");
+	Mana->Name = "Mana";
+
+	OutgoingDamageModifier = CreateDefaultSubobject<UStat>("OutgoingDamageModifier");
+	OutgoingDamageModifier->Name = "OutgoingDamageModifier";
+	OutgoingDamageModifier->Value = 1;
+
+	IncomingDamageModifier = CreateDefaultSubobject<UStat>("IncomingDamageModifier");
+	IncomingDamageModifier->Name = "IncomingDamageModifier";
+	IncomingDamageModifier->Value = 1;
 	// ...
 }
 
@@ -33,4 +47,16 @@ void UStatsComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+}
+
+void UStatsComponent::Damage(float Damage)
+{
+	float DamageDealt = Damage - Armor->Value;
+
+	if (DamageDealt < 0)
+	{
+		DamageDealt = 0;
+	}
+
+	Health->Add(-DamageDealt);
 }

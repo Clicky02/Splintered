@@ -44,6 +44,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
 	float RateOfChange = 0.0f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+	bool IsActive = false;
+
 	UPROPERTY(BlueprintAssignable, Category = "Stats")
 	FOnStatChange OnStatChange;
 
