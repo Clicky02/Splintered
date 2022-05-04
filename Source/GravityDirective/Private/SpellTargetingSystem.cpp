@@ -8,7 +8,7 @@ void USpellTargetingSystem::StartTargeting_Implementation()
 
 }
 
-void USpellTargetingSystem::TickTargeting_Implementation()
+void USpellTargetingSystem::TickTargeting_Implementation(float DeltaTime)
 {
 
 }

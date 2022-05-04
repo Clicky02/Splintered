@@ -2,6 +2,11 @@
 
 
 #include "StatsComponent.h"
+#include <Runtime/AIModule/Classes/AIController.h>
+#include "BrainComponent.h"
+
+TArray<AActor*> UStatsComponent::StatActors = TArray<AActor*>();
+
 
 // Sets default values for this component's properties
 UStatsComponent::UStatsComponent()
@@ -41,7 +46,17 @@ void UStatsComponent::BeginPlay()
 	Mana->RefreshValues();
 	OutgoingDamageModifier->RefreshValues();
 	IncomingDamageModifier->RefreshValues();
+
+	StatActors.Add(GetOwner());
 	
+}
+
+void UStatsComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	if (bIsAlive)
+	{
+		Kill();
+	}
 }
 
 UStat* UStatsComponent::GetStat(EStatVariant StatVariant)
@@ -74,16 +89,34 @@ void UStatsComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	for (int32 i = 0; i < ActiveStatusEffects.Num(); i++) 
+	if (bIsAlive || bShouldTickWhenDead)
 	{
-		ActiveStatusEffects[i]->Tick(DeltaTime);
-
-		if (!ActiveStatusEffects[i]->IsActive())
+		for (int32 i = 0; i < ActiveStatusEffects.Num(); i++)
 		{
-			ActiveStatusEffects.RemoveAt(i);
-			i--;
+			ActiveStatusEffects[i]->Tick(DeltaTime);
+
+			if (!ActiveStatusEffects[i]->IsActive())
+			{
+				ActiveStatusEffects.RemoveAt(i);
+				i--;
+			}
 		}
 	}
+}
+
+TArray<AActor*> UStatsComponent::GetStatActors()
+{
+	return StatActors;
+}
+
+int32 UStatsComponent::GetTeam()
+{
+	return Team;
+}
+
+void UStatsComponent::SetTeam(int32 NewTeam)
+{
+	Team = NewTeam;
 }
 
 void UStatsComponent::Damage(float Damage)
@@ -94,6 +127,8 @@ void UStatsComponent::Damage(float Damage)
 	{
 		DamageDealt -= Armor->Value;
 	}
+
+	OutgoingDamageModifier[1];
 
 	if (IncomingDamageModifier->bIsActive)
 	{
@@ -107,6 +142,37 @@ void UStatsComponent::Damage(float Damage)
 
 
 	Health->Add(-DamageDealt);
+}
+
+bool UStatsComponent::IsAlive()
+{
+	return bIsAlive;
+}
+
+bool UStatsComponent::Kill()
+{
+	bIsAlive = false;
+
+	FOnDeathPayload Payload;
+	Payload.StatsComponent = this;
+
+	OnDeath.Broadcast(Payload);
+
+	APawn* Pawn = Cast<APawn>(GetOwner());
+
+	if (IsValid(Pawn))
+	{
+		AAIController* Controller = Cast<AAIController>(Pawn->GetController());
+
+		if (IsValid(Controller))
+		{
+			Controller->GetBrainComponent()->StopLogic("Dead");
+		}
+	}
+
+	StatActors.Remove(GetOwner());
+
+	return true;
 }
 
 void UStatsComponent::ApplyStatusEffect(TSubclassOf<UStatusEffect> StatusEffect, float StartStacks, float StartDuration)

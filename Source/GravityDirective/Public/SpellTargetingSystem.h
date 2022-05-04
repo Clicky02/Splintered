@@ -62,7 +62,7 @@ public:
 	void StartTargeting();
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Targeting")
-	void TickTargeting();
+	void TickTargeting(float DeltaTime);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Targeting")
 	void EndTargeting();

@@ -44,6 +44,11 @@ void ABaseVRPawn::BeginPlay()
 	
 }
 
+FVector ABaseVRPawn::GetCameraPosition()
+{
+	return VRCameraComponent->GetComponentLocation();
+}
+
 // Called every frame
 void ABaseVRPawn::Tick(float DeltaTime)
 {

@@ -61,7 +61,7 @@ public:
 	void StartDetecting();
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Spell Activation")
-	void Tick();
+	void Tick(float DeltaTime);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Spell Activation")
 	void EndDetecting();

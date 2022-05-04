@@ -1,7 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#define PERPINDICULAR_TO_OUTWARD_DOT_TOLERANCE 0.3
+#define PERPINDICULAR_TO_UP_DOT_TOLERANCE 0.12
+#define UPWARD_DOT_MIN 0.9
 
 #include "CasterComponent.h"
+#include "Kismet/KismetMathLibrary.h"
+#include <GravityDirective/Public/BaseVRPawn.h>
 
 const float MIN_UPWARD_DISTANCE = 50;
 
@@ -20,6 +25,8 @@ UCasterComponent::UCasterComponent()
 void UCasterComponent::BeginPlay()
 {
 	Super::BeginPlay();
+
+	CasterActorMesh = Cast<UStaticMeshComponent>(GetOwner()->GetComponentByClass(UStaticMeshComponent::StaticClass()));
 	
 }
 
@@ -46,10 +53,15 @@ void UCasterComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (PrimarySpell) PrimarySpell->Tick();
-	if (UpwardSpell) UpwardSpell->Tick();
-	if (DownwardSpell) DownwardSpell->Tick();
-	if (BlockingSpell) BlockingSpell->Tick();
+	bForwardVelocityIsDirty = true;
+	bOutwardVelocityIsDirty = true;
+	bOutwardDirectionIsDirty = true;
+	bCasterStanceIsDirty = true;
+
+	if (PrimarySpell) PrimarySpell->Tick(DeltaTime);
+	if (UpwardSpell) UpwardSpell->Tick(DeltaTime);
+	if (DownwardSpell) DownwardSpell->Tick(DeltaTime);
+	if (BlockingSpell) BlockingSpell->Tick(DeltaTime);
 }
 
 UBaseSpell* UCasterComponent::GetSpell(ESpellSlot Slot) {
@@ -85,6 +97,125 @@ void UCasterComponent::SetCasting(ESpellSlot SpellSlot, bool IsCasting)
 	}
 
 	
+}
+
+AActor* UCasterComponent::GetWielder()
+{
+	return Player;
+}
+
+UStaticMeshComponent* UCasterComponent::GetConnectedHand()
+{
+	return ConnectedHand;
+}
+
+UStaticMeshComponent* UCasterComponent::GetStaticMesh()
+{
+	return CasterActorMesh;
+}
+
+float UCasterComponent::GetForwardVelocity()
+{
+	if (bForwardVelocityIsDirty)
+	{
+		USceneComponent* VelComp = ConnectedHand;
+
+		if (!VelComp)
+		{
+			VelComp = GetOwner()->GetRootComponent();
+		}
+		
+		FVector Vel = VelComp->GetComponentVelocity();
+
+		ForwardVelocity = Vel.Dot(UKismetMathLibrary::GetForwardVector(CasterActorMesh->GetSocketRotation("CastPoint")));
+		bForwardVelocityIsDirty = false;
+	}
+
+	return ForwardVelocity;
+}
+
+float UCasterComponent::GetOutwardVelocity()
+{
+	if (bOutwardVelocityIsDirty)
+	{
+		USceneComponent* VelComp = ConnectedHand;
+
+		if (!VelComp)
+		{
+			VelComp = GetOwner()->GetRootComponent();
+		}
+
+		OutwardVelocity = VelComp->GetComponentVelocity().Dot(GetOutwardDirection());
+		bOutwardVelocityIsDirty = false;
+	}
+
+	return OutwardVelocity;
+}
+
+FVector UCasterComponent::GetOutwardDirection()
+{
+	if (bOutwardDirectionIsDirty)
+	{
+		USceneComponent* VelComp = ConnectedHand;
+
+		if (!VelComp)
+		{
+			VelComp = GetOwner()->GetRootComponent();
+		}
+
+		ABaseVRPawn* Pawn = Cast<ABaseVRPawn>(Player);
+
+		// Set OutwardDirection to the center position of the player
+		if (Pawn)
+		{
+			OutwardDirection = Pawn->GetCameraPosition();
+
+			OutwardDirection.SetComponentForAxis(EAxis::Y, (Pawn->GetActorLocation().Y + OutwardDirection.Y) / 2);
+		}
+		else
+		{
+			OutwardDirection = Player->GetActorLocation();
+		}
+
+		//Set OutwardDirection to the Outward direction
+		OutwardDirection = (VelComp->GetComponentLocation() - OutwardDirection);
+		OutwardDirection.Normalize(0.01);
+
+		bOutwardDirectionIsDirty = false;
+	}
+
+	return OutwardDirection;
+}
+
+ECasterStance UCasterComponent::GetCasterStance()
+{
+	if (bCasterStanceIsDirty)
+	{
+		FVector ForwardVec = UKismetMathLibrary::GetForwardVector(CasterActorMesh->GetSocketRotation("CastPoint"));
+
+		float UpDot = ForwardVec.Dot(UKismetMathLibrary::Vector_Up());
+
+		bool bIsPerpindicularToOutward = abs(ForwardVec.Dot(GetOutwardDirection())) < PERPINDICULAR_TO_OUTWARD_DOT_TOLERANCE;
+		bool bIsPerpindicularToUp = abs(UpDot) < PERPINDICULAR_TO_UP_DOT_TOLERANCE;
+		bool bIsUpward = UpDot > UPWARD_DOT_MIN;
+
+		if (bIsPerpindicularToOutward && bIsPerpindicularToUp)
+		{
+			CasterStance = ECasterStance::Sideways;
+		}
+		else if (bIsUpward)
+		{
+			CasterStance = ECasterStance::Upward;
+		}
+		else
+		{
+			CasterStance = ECasterStance::None;
+		}
+
+		bCasterStanceIsDirty = false;
+	}
+
+	return CasterStance;
 }
 
 void UCasterComponent::SetSpell(UBaseSpell* Spell)

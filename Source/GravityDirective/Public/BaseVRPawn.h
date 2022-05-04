@@ -46,6 +46,10 @@ protected:
 	virtual void BeginPlay() override;
 
 public:	
+	// Get Camera Position
+	UFUNCTION(BlueprintCallable)
+	FVector GetCameraPosition();
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 

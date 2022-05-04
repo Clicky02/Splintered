@@ -17,4 +17,10 @@ class GRAVITYDIRECTIVE_API UBlueprintUtils : public UBlueprintFunctionLibrary
 public: 
 	UFUNCTION(BlueprintCallable, Category = "Helper")
 	static void SortByDistance(FVector Origin, TArray<AActor*> inArray, TArray<AActor*>& outArray);
+
+	UFUNCTION(BlueprintCallable, Category = "Helper")
+	static FVector GetLocation(AActor* Actor, bool bUseCamera);
+
+	UFUNCTION(BlueprintCallable, Category = "Helper")
+	static FVector GetVRPawnCenter(ABaseVRPawn* Pawn);
 };

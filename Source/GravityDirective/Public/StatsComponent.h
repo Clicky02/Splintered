@@ -9,6 +9,18 @@
 #include "StatType.h"
 #include "StatsComponent.generated.h"
 
+USTRUCT(BlueprintType)
+struct FOnDeathPayload
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UStatsComponent* StatsComponent;
+};
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDeath, const FOnDeathPayload&, Payload);
+
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class GRAVITYDIRECTIVE_API UStatsComponent : public UActorComponent
 {
@@ -19,7 +31,17 @@ protected:
 	UPROPERTY(BlueprintReadWrite)
 	TArray<UStatusEffect*> ActiveStatusEffects;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+	int32 Team = -1;
+
+	static TArray<AActor*> StatActors;
+
+	bool bIsAlive = true;
+
 public:
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+	bool bShouldTickWhenDead = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Instanced, Category = "Stats")
 	UStat* Health;
@@ -36,6 +58,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Instanced, Category = "Stats")
 	UStat* IncomingDamageModifier;
 
+	FOnDeath OnDeath;
+
 
 public:	
 
@@ -47,6 +71,8 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
 	UFUNCTION(BlueprintCallable, Category = "Stats")
 	UStat* GetStat(EStatVariant StatVariant);
 
@@ -56,7 +82,22 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	UFUNCTION(BlueprintCallable, Category = "Stats")
+	static TArray<AActor*> GetStatActors();
+
+	UFUNCTION(BlueprintCallable, Category = "Stats")
+	int32 GetTeam();
+
+	UFUNCTION(BlueprintCallable, Category = "Stats")
+	void SetTeam(int32 NewTeam);
+
+	UFUNCTION(BlueprintCallable, Category = "Stats")
 	virtual void Damage(float Damage);
+
+	UFUNCTION(BlueprintCallable, Category = "Stats")
+	bool IsAlive();
+
+	UFUNCTION(BlueprintCallable, Category = "Stats")
+	bool Kill();
 
 	UFUNCTION(BlueprintCallable, Category = "Stats")
 	void ApplyStatusEffect(TSubclassOf<UStatusEffect> StatusEffect, float StartStacks = 1, float StartDuration = -1);

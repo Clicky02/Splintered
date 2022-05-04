@@ -12,6 +12,14 @@
 #include "CasterComponent.generated.h"
 
 
+UENUM(BlueprintType)
+enum class ECasterStance : uint8
+{
+	None UMETA(DisplayName = "None"),
+	Upward UMETA(DisplayName = "Upward"),
+	Sideways UMETA(DisplayName = "Sideways"),
+};
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class GRAVITYDIRECTIVE_API UCasterComponent : public UActorComponent, public IHeldInteractable
 {
@@ -26,11 +34,29 @@ class GRAVITYDIRECTIVE_API UCasterComponent : public UActorComponent, public IHe
 
 	ESpellSlot CastingSlot = ESpellSlot::None;
 
+	bool bForwardVelocityIsDirty = true;
+	float ForwardVelocity = 0;
+
+	bool bOutwardVelocityIsDirty = true;
+	float OutwardVelocity = 0;
+
+	bool bOutwardDirectionIsDirty = true;
+	FVector OutwardDirection;
+
+	bool bCasterStanceIsDirty = true;
+	ECasterStance CasterStance = ECasterStance::None;
+
+
 protected:
 
+	// The actor wielding the caster
 	AActor* Player;
 
+	// The static mesh of the hand holding the staff
 	UStaticMeshComponent* ConnectedHand;
+
+	// The static mesh of the staff
+	UStaticMeshComponent* CasterActorMesh;
 
 public:	
 
@@ -83,4 +109,26 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Caster")
 	void SetCasting(ESpellSlot SpellSlot, bool IsCasting);
+
+	UFUNCTION(BlueprintCallable, Category = "Caster")
+	AActor* GetWielder();
+
+	UFUNCTION(BlueprintCallable, Category = "Caster")
+	UStaticMeshComponent* GetConnectedHand();
+
+	UFUNCTION(BlueprintCallable, Category = "Caster")
+	UStaticMeshComponent* GetStaticMesh();
+
+	UFUNCTION(BlueprintCallable, Category = "Caster")
+	float GetForwardVelocity();
+
+	UFUNCTION(BlueprintCallable, Category = "Caster")
+	float GetOutwardVelocity();
+
+	UFUNCTION(BlueprintCallable, Category = "Caster")
+	FVector GetOutwardDirection();
+
+	// Currently will only return upward, sideways, or none
+	UFUNCTION(BlueprintCallable, Category = "Caster")
+	ECasterStance GetCasterStance();
 };

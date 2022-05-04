@@ -26,7 +26,7 @@ void USpellActivation::StartDetecting_Implementation()
     bIsPrimed = true;
 }
 
-void USpellActivation::Tick_Implementation()
+void USpellActivation::Tick_Implementation(float DeltaTime)
 {
 }
 

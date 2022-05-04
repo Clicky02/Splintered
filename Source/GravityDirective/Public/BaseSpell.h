@@ -35,6 +35,9 @@ class GRAVITYDIRECTIVE_API UBaseSpell : public UObject
 protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spell")
+	FName Name = TEXT("Unnamed");
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spell")
 	bool bIsPrimed = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spell")
@@ -91,7 +94,7 @@ public:
 	void Deactivate();
 
 	UFUNCTION(BlueprintNativeEvent, Category = "Spell")
-	void Tick();
+	void Tick(float DeltaTime);
 
 	UFUNCTION(BlueprintCallable, Category = "Spell")
 	void Prime();
@@ -104,6 +107,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Spell")
 	void EndTargeting();
+
+	UFUNCTION(BlueprintPure, Category = "Spell")
+	FName GetName();
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Spell")
 	void CastSpell();

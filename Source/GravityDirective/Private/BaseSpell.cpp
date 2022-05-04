@@ -3,6 +3,7 @@
 
 #include "BaseSpell.h"
 #include "..\Public\BaseSpell.h"
+#include "../../../../../../../../Program Files/Epic Games/UE_5.0/Engine/Plugins/Developer/TraceDataFiltering/Source/TraceDataFiltering/Private/TraceChannel.h"
 
 UWorld* UBaseSpell::GetWorld() const
 {
@@ -74,12 +75,12 @@ void UBaseSpell::Deactivate_Implementation()
 }
 
 
-void UBaseSpell::Tick_Implementation()
+void UBaseSpell::Tick_Implementation(float DeltaTime)
 {
     if (bIsPrimed)
     {
-        if (Activation) Activation->Tick();
-        if (TargetingSystem) TargetingSystem->TickTargeting();
+        if (Activation) Activation->Tick(DeltaTime);
+        if (TargetingSystem) TargetingSystem->TickTargeting(DeltaTime);
     }
 }
 
@@ -105,6 +106,11 @@ void UBaseSpell::EndTargeting()
     bIsTargeting = false;
 
     if (TargetingSystem) TargetingSystem->EndTargeting();
+}
+
+FName UBaseSpell::GetName()
+{
+    return Name;
 }
 
 void UBaseSpell::Prime()
