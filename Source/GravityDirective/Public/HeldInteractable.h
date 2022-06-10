@@ -22,7 +22,7 @@ struct FBeginControlPayload
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Control Functions")
 	AActor* Player;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Control Functions")
-	UStaticMeshComponent* Hand;
+	UMeshComponent* Hand;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Control Functions")
 	HandSide HandSide;
 };

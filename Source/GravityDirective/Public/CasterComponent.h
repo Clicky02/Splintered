@@ -53,7 +53,7 @@ protected:
 	AActor* Player;
 
 	// The static mesh of the hand holding the staff
-	UStaticMeshComponent* ConnectedHand;
+	UMeshComponent* ConnectedHand;
 
 	// The static mesh of the staff
 	UStaticMeshComponent* CasterActorMesh;
@@ -114,7 +114,7 @@ public:
 	AActor* GetWielder();
 
 	UFUNCTION(BlueprintCallable, Category = "Caster")
-	UStaticMeshComponent* GetConnectedHand();
+	UMeshComponent* GetConnectedHand();
 
 	UFUNCTION(BlueprintCallable, Category = "Caster")
 	UStaticMeshComponent* GetStaticMesh();

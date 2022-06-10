@@ -28,7 +28,7 @@ FVector UBlueprintUtils::GetLocation(AActor* Actor, bool bUseCamera=false)
 
 		FVector ActorVec = PawnRef->GetActorLocation();
 
-		ReturnVec.SetComponentForAxis(EAxis::Y, ActorVec.Y);
+		ReturnVec.SetComponentForAxis(EAxis::Z, ActorVec.Z);
 
 		return ReturnVec;
 	}
@@ -47,4 +47,9 @@ FVector UBlueprintUtils::GetVRPawnCenter(ABaseVRPawn* Pawn)
 
 	return ReturnVec;
 
+}
+
+AMapManager* UBlueprintUtils::GetCurrentMapManager()
+{
+	return AMapManager::Main;
 }

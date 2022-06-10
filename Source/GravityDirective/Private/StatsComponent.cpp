@@ -109,6 +109,18 @@ TArray<AActor*> UStatsComponent::GetStatActors()
 	return StatActors;
 }
 
+void UStatsComponent::Init(int32 initialLevel, int32 initialTeam)
+{
+	this->Level = initialLevel;
+	this->Team = initialTeam;
+
+	FOnStatsInitPayload Payload;
+	Payload.Level = initialLevel;
+	Payload.StatsComponent = this;
+
+	OnStatsInit.Broadcast(Payload);
+}
+
 int32 UStatsComponent::GetTeam()
 {
 	return Team;

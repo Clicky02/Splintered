@@ -23,8 +23,8 @@ ABaseVRPawn::ABaseVRPawn()
 	LeftHandPosition = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Left Hand Position"));
 	LeftHandPosition->AttachToComponent(LeftHandMotionControllerComponent, FAttachmentTransformRules::KeepRelativeTransform);
 
-	LeftHandMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Left Hand Mesh"));
-	LeftHandMesh->AttachToComponent(LeftHandMotionControllerComponent, FAttachmentTransformRules::KeepWorldTransform);
+	LeftHandSkeletalMesh =  CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Left Hand Skeletal Mesh"));
+	LeftHandSkeletalMesh->AttachToComponent(LeftHandMotionControllerComponent, FAttachmentTransformRules::KeepWorldTransform);
 
 	RightHandMotionControllerComponent = CreateDefaultSubobject<UMotionControllerComponent>(TEXT("Motion Controller Right"));
 	RightHandMotionControllerComponent->AttachToComponent(CameraRig, FAttachmentTransformRules::KeepRelativeTransform);

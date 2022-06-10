@@ -18,7 +18,21 @@ struct FOnDeathPayload
 	UStatsComponent* StatsComponent;
 };
 
+USTRUCT(BlueprintType)
+struct FOnStatsInitPayload
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UStatsComponent* StatsComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Level;
+};
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDeath, const FOnDeathPayload&, Payload);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnStatsInit, const FOnStatsInitPayload&, Payload);
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -33,6 +47,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
 	int32 Team = -1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+	int32 Level = -1;
 
 	static TArray<AActor*> StatActors;
 
@@ -60,6 +77,9 @@ public:
 
 	FOnDeath OnDeath;
 
+	UPROPERTY(BlueprintCallable)
+	FOnStatsInit OnStatsInit;
+
 
 public:	
 
@@ -83,6 +103,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Stats")
 	static TArray<AActor*> GetStatActors();
+
+	UFUNCTION(BlueprintCallable, Category = "Stats")
+	void Init(int32 initialLevel, int32 initialTeam = 0);
 
 	UFUNCTION(BlueprintCallable, Category = "Stats")
 	int32 GetTeam();

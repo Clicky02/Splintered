@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "GameManager.generated.h"
 
+
 UCLASS()
 class GRAVITYDIRECTIVE_API AGameManager : public AActor
 {

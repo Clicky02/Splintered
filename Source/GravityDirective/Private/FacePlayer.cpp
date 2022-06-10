@@ -3,6 +3,7 @@
 
 #include "FacePlayer.h"
 #include "GameFramework/Character.h"
+#include "BlueprintUtils.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values for this component's properties
@@ -33,14 +34,13 @@ void UFacePlayer::TickComponent(float DeltaTime, ELevelTick TickType, FActorComp
 
 	if (!Target)
 	{
-		Target = Cast<AActor>(UGameplayStatics::GetPlayerCharacter(this, 0));
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Screen Message"));
+		Target = Cast<AActor>(UGameplayStatics::GetPlayerPawn(this, 0));
 	}
 
 	if (Target)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("------"));
-		GetOwner()->SetActorRotation((Target->GetActorLocation() - GetOwner()->GetActorLocation()).Rotation());
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("------"));
+		GetOwner()->SetActorRotation((UBlueprintUtils::GetLocation(Target, false) - GetOwner()->GetActorLocation()).Rotation());
 	}
 	// ...
 }

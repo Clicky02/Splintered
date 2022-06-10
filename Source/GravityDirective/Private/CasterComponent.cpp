@@ -104,7 +104,7 @@ AActor* UCasterComponent::GetWielder()
 	return Player;
 }
 
-UStaticMeshComponent* UCasterComponent::GetConnectedHand()
+UMeshComponent* UCasterComponent::GetConnectedHand()
 {
 	return ConnectedHand;
 }

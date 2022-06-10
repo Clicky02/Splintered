@@ -26,7 +26,7 @@ protected:
 	class UStaticMeshComponent* LeftHandPosition;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
-	class UStaticMeshComponent* LeftHandMesh;
+	class USkeletalMeshComponent* LeftHandSkeletalMesh;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
 	class UMotionControllerComponent* RightHandMotionControllerComponent;
