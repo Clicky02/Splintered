@@ -49,7 +49,7 @@ FVector UBlueprintUtils::GetVRPawnCenter(ABaseVRPawn* Pawn)
 
 }
 
-AMapManager* UBlueprintUtils::GetCurrentMapManager()
+ABaseMapManager* UBlueprintUtils::GetCurrentMapManagerBase()
 {
-	return AMapManager::Main;
+	return ABaseMapManager::Main;
 }

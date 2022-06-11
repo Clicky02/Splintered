@@ -75,6 +75,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Instanced, Category = "Stats")
 	UStat* IncomingDamageModifier;
 
+	UPROPERTY(BlueprintAssignable)
 	FOnDeath OnDeath;
 
 	UPROPERTY(BlueprintCallable)

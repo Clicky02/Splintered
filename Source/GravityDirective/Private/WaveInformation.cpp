@@ -7,36 +7,34 @@ UWaveInformation::UWaveInformation()
 {
 }
 
-FWaveMakeup UWaveInformation::GetWaveMakeup(int WaveNumber)
+UWaveMakeup* UWaveInformation::GetWaveMakeup(int WaveNumber)
 {
     
     if (NumSubwaves > 0)
     {
-        FDistributedWaveMakeup WaveMakeup;
+        TArray<UWaveMakeup*> Subwaves;
         for (int i = 0; i < NumSubwaves; i++)
         {
-            FWaveMakeup Subwave = GetIndividualWave(WaveNumber, i, NumSubwaves, true);
-            Subwave.WaveEndType = EWaveEndType::RemainingEnemies;
-            Subwave.RemainingEnemiesWhenEnd = 0;
-            Subwave.bKillRemainingEnemiesOnEnd = false;
-            WaveMakeup.SubWaves.Add(Subwave);
+            UWaveMakeup* Subwave = NewObject<UWaveMakeup>();
+            Subwave->InitEnemyWave(GetWaveEnemies(WaveNumber, i, NumSubwaves, true), 0, false);
+            Subwaves.Add(Subwave);
         }
+
+        UWaveMakeup* WaveMakeup = NewObject<UWaveMakeup>();
 
         return WaveMakeup;
     }
     else
     {
-        FWaveMakeup WaveMakeup = GetIndividualWave(WaveNumber, 1, 1, false);
-        WaveMakeup.WaveEndType = EWaveEndType::RemainingEnemies;
-        WaveMakeup.RemainingEnemiesWhenEnd = 0;
-        WaveMakeup.bKillRemainingEnemiesOnEnd = false;
+        UWaveMakeup* WaveMakeup = NewObject<UWaveMakeup>();
+        WaveMakeup->InitEnemyWave(GetWaveEnemies(WaveNumber, 1, 1, false), 0, false);
         return WaveMakeup;
     }
 
     
 }
 
-FWaveMakeup UWaveInformation::GetIndividualWave(int WaveNumber, int Subwave, int NumSubwave, bool isSubwave)
+TArray<FWaveEnemy> UWaveInformation::GetWaveEnemies(int WaveNumber, int Subwave, int NumSubwave, bool isSubwave)
 {
     float TotalWeight = 0;
     float WaveProgress = Subwave / (NumSubwave - 1);
@@ -134,12 +132,7 @@ FWaveMakeup UWaveInformation::GetIndividualWave(int WaveNumber, int Subwave, int
         Enemies.Add(Enemy);
     }
 
-
-    FWaveMakeup WaveMakeup;
-    WaveMakeup.Enemies = Enemies;
-
-
-    return WaveMakeup;
+    return Enemies;
 }
 
 // Not entirely accurate because multiple things can be highest

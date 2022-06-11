@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
-#include <GravityDirective/Public/MapManager.h>
+#include <GravityDirective/Public/BaseMapManager.h>
 #include <GameModeState.h>
 #include "BlueprintUtils.generated.h"
 
@@ -28,6 +28,6 @@ public:
 	static FVector GetVRPawnCenter(ABaseVRPawn* Pawn);
 
 	UFUNCTION(BlueprintCallable, Category = "Helper")
-	static AMapManager* GetCurrentMapManager();
+	static ABaseMapManager* GetCurrentMapManagerBase();
 
 };
