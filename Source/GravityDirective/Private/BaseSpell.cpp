@@ -3,7 +3,7 @@
 
 #include "BaseSpell.h"
 #include "..\Public\BaseSpell.h"
-#include "../../../../../../../../Program Files/Epic Games/UE_5.0/Engine/Plugins/Developer/TraceDataFiltering/Source/TraceDataFiltering/Private/TraceChannel.h"
+
 
 UWorld* UBaseSpell::GetWorld() const
 {
