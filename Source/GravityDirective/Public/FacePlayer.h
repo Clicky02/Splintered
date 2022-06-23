@@ -15,6 +15,9 @@ class GRAVITYDIRECTIVE_API UFacePlayer : public UActorComponent
 protected:
 	AActor* Target;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bUseZRotationOnly = true;
+
 public:	
 	// Sets default values for this component's properties
 	UFacePlayer();

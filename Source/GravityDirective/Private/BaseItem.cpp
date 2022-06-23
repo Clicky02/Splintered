@@ -6,13 +6,20 @@
 // Sets default values
 ABaseItem::ABaseItem()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 
 	DisplayMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Display Mesh"));
+	DisplayMesh->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
+
 	NameDisplay = CreateDefaultSubobject<UTextRenderComponent>(TEXT("Name Display"));
+	NameDisplay->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
+
 	DetailDisplay = CreateDefaultSubobject<UTextRenderComponent>(TEXT("Detail Display"));
-	Hitbox = CreateDefaultSubobject<UCapsuleCollisionComponent>(TEXT("Hitbox"));
+	DetailDisplay->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
+
+	Hitbox = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Hitbox"));
+	Hitbox->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
+
 	FacePlayerComponent = CreateDefaultSubobject<UFacePlayer>(TEXT("Face Player"));
 }
 
@@ -23,17 +30,10 @@ void ABaseItem::InitProperties(UStaticMesh* Mesh, FText Name, FText Description)
 	DetailDisplay->SetText(Description);
 }
 
-// Called when the game starts or when spawned
-void ABaseItem::BeginPlay()
+void ABaseItem::InitPropertiesAndMeshRotation(UStaticMesh* Mesh, FRotator MeshRotation, FText Name, FText Description)
 {
-	Super::BeginPlay();
-	
+	InitProperties(Mesh, Name, Description);
+	DisplayMesh->SetRelativeRotation(MeshRotation);
 }
 
-// Called every frame
-void ABaseItem::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
 

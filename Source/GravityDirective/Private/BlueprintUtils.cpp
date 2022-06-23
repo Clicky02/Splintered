@@ -53,3 +53,22 @@ ABaseMapManager* UBlueprintUtils::GetCurrentMapManagerBase()
 {
 	return ABaseMapManager::Main;
 }
+
+FString UBlueprintUtils::GetStatName(EStatVariant Stat)
+{
+	switch (Stat)
+	{
+	case EStatVariant::Armor:
+		return FString(TEXT("Armor"));
+	case EStatVariant::Health:
+		return FString(TEXT("Health"));
+	case EStatVariant::IncomingDamageModifier:
+		return FString(TEXT("Resistance"));
+	case EStatVariant::Mana:
+		return FString(TEXT("Mana"));
+	case EStatVariant::OutgoingDamageModifier:
+		return FString(TEXT("Attack"));
+	}
+
+	return FString(TEXT("Invalid"));
+}

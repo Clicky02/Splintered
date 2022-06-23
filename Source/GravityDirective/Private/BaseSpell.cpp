@@ -38,9 +38,8 @@ int32 UBaseSpell::GetSpellLevel()
     return Level;
 }
 
-void UBaseSpell::Init_Implementation(ESpellSlot InitialSpellSlot, int32 InitialLevel)
+void UBaseSpell::Init_Implementation(int32 InitialLevel)
 {
-    this->SpellSlot = InitialSpellSlot;
     this->Level = InitialLevel;
 }
 
@@ -111,6 +110,11 @@ void UBaseSpell::EndTargeting()
 FName UBaseSpell::GetName()
 {
     return Name;
+}
+
+UStaticMesh* UBaseSpell::GetItemDisplayMesh()
+{
+    return ItemDisplayMesh;
 }
 
 void UBaseSpell::Prime()

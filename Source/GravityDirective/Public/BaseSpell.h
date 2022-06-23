@@ -46,11 +46,14 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spell")
 	bool bIsCasting = false;
 
-	UPROPERTY(EditAnywhere, Category = "Spell")
-	ESpellSlot SpellSlot;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spell")
+	ESpellSlot SpellSlot = ESpellSlot::None;
 
 	UPROPERTY(EditAnywhere, Category = "Spell")
 	int32 Level;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spell")
+	UStaticMesh* ItemDisplayMesh;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spell")
 	AActor* Wielder;
@@ -85,7 +88,7 @@ public:
 	int32 GetSpellLevel();
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Spell")
-	void Init(ESpellSlot InitialSpellSlot, int32 InitialLevel);
+	void Init(int32 InitialLevel);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Spell")
 	void Activate(const FSpellActivatePayload& Payload);
@@ -110,6 +113,9 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "Spell")
 	FName GetName();
+
+	UFUNCTION(BlueprintPure, Category = "Spell")
+	UStaticMesh* GetItemDisplayMesh();
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Spell")
 	void CastSpell();

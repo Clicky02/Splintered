@@ -21,6 +21,8 @@ UWaveMakeup* UWaveInformation::GetWaveMakeup(int WaveNumber)
         }
 
         UWaveMakeup* WaveMakeup = NewObject<UWaveMakeup>();
+        WaveMakeup->SubWaves = Subwaves;
+        WaveMakeup->WaveEndType = EWaveEndType::SubwavesComplete;
 
         return WaveMakeup;
     }

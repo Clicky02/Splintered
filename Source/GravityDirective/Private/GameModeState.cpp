@@ -33,6 +33,6 @@ void UGameModeState::EndState()
 UGameModeState* UGameModeState::CreateGameModeSate(FTickSignature TickFunc, FOnStartSignature OnStartFunc, FOnEndSignature OnEndFunc)
 {
 	UGameModeState* NewState = NewObject<UGameModeState>();
-	//NewState->Init(TickFunc, OnStartFunc, OnEndFunc);
+	NewState->Init(TickFunc, OnStartFunc, OnEndFunc);
 	return NewState;
 }

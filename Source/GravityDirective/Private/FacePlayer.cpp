@@ -40,7 +40,10 @@ void UFacePlayer::TickComponent(float DeltaTime, ELevelTick TickType, FActorComp
 	if (Target)
 	{
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("------"));
-		GetOwner()->SetActorRotation((UBlueprintUtils::GetLocation(Target, false) - GetOwner()->GetActorLocation()).Rotation());
+		FRotator3d Rotator = (UBlueprintUtils::GetLocation(Target, false) - GetOwner()->GetActorLocation()).Rotation();
+		Rotator.Roll = 0;
+		Rotator.Pitch = 0;
+		GetOwner()->SetActorRotation(Rotator);
 	}
 	// ...
 }

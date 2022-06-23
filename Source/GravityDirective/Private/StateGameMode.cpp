@@ -7,7 +7,7 @@
 AStateGameMode::AStateGameMode()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
 }
 
@@ -17,6 +17,9 @@ void AStateGameMode::BeginPlay()
 	Super::BeginPlay();
 
 	CurrentState = StartingState;
+	CurrentState->StartState();
+
+	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Some debug message!"));
 
 }
 

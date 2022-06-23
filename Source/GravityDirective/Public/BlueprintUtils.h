@@ -6,7 +6,9 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include <GravityDirective/Public/BaseMapManager.h>
 #include <GameModeState.h>
+#include "StatModifier.h"
 #include "BlueprintUtils.generated.h"
+
 
 
 /**
@@ -29,5 +31,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Helper")
 	static ABaseMapManager* GetCurrentMapManagerBase();
+
+	UFUNCTION(BlueprintCallable, Category = "Helper")
+	static FString GetStatName(EStatVariant Stat);
 
 };
