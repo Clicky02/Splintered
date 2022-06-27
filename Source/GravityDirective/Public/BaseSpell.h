@@ -53,6 +53,9 @@ protected:
 	int32 Level;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spell")
+	float ManaCost = 0.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spell")
 	UStaticMesh* ItemDisplayMesh;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spell")
@@ -63,6 +66,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spell")
 	AActor* CasterActor;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spell")
+	class UStatsComponent* StatsComponent;
 
 public:
 
@@ -117,15 +123,9 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Spell")
 	UStaticMesh* GetItemDisplayMesh();
 
-	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Spell")
-	void CastSpell();
+	UFUNCTION(BlueprintCallable, Category = "Spell")
+	bool CastSpell();
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Spell")
-	void CastSpellByLocation(const TArray<FVector>& Locations);
-
-	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Spell")
-	void CastSpellByActor(const TArray<AActor*>& Targets);
-
-	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Spell")
-	void CastSpellByDirection(FVector Direction);
+	void OnCastSpell();
 };

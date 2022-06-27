@@ -2,6 +2,7 @@
 
 
 #include "BaseSpell.h"
+#include "StatsComponent.h"
 #include "..\Public\BaseSpell.h"
 
 
@@ -50,13 +51,16 @@ void UBaseSpell::Activate_Implementation(const FSpellActivatePayload& Payload)
     CasterComponent = Payload.CasterComponent;
     CasterActor = Payload.CasterActor;
 
+    StatsComponent = Cast<UStatsComponent>(CasterActor->GetComponentByClass(UStatsComponent::StaticClass()));
+
     FSpellActivationActivatePayload ActivationPayload;
     ActivationPayload.Wielder = Wielder;
     ActivationPayload.CasterComponent = CasterComponent;
     ActivationPayload.CasterActor = CasterActor;  
 
     Activation->Activate(ActivationPayload);
-    if (TargetingSystem) {
+    if (TargetingSystem) 
+    {
         FTargetingActivatePayload TargetingPayload;
         TargetingPayload.Wielder = Wielder;
         TargetingPayload.CasterComponent = CasterComponent;
@@ -115,6 +119,30 @@ FName UBaseSpell::GetName()
 UStaticMesh* UBaseSpell::GetItemDisplayMesh()
 {
     return ItemDisplayMesh;
+}
+
+bool UBaseSpell::CastSpell()
+{
+    if (StatsComponent)
+    {
+        if (StatsComponent->UseMana(ManaCost))
+        {
+            OnCastSpell();
+            return true;
+        }
+        else if (!StatsComponent->Mana->IsActive())
+        {
+            OnCastSpell();
+            return true;
+        }
+
+        return false;
+    }
+    else
+    {
+        OnCastSpell();
+        return true;
+    }
 }
 
 void UBaseSpell::Prime()

@@ -121,6 +121,15 @@ public:
 	bool IsAlive();
 
 	UFUNCTION(BlueprintCallable, Category = "Stats")
+	bool UseMana(float BaseManaCost, bool Force = false);
+
+	UFUNCTION(BlueprintCallable, Category = "Stats")
+	bool HasEnoughMana(float BaseManaCost);
+
+	UFUNCTION(BlueprintCallable, Category = "Stats")
+	float GetRealManaCost(float BaseManaCost);
+
+	UFUNCTION(BlueprintCallable, Category = "Stats")
 	bool Kill();
 
 	UFUNCTION(BlueprintCallable, Category = "Stats")

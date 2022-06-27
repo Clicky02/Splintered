@@ -161,6 +161,31 @@ bool UStatsComponent::IsAlive()
 	return bIsAlive;
 }
 
+bool UStatsComponent::UseMana(float BaseManaCost, bool Force)
+{
+	if (!Mana->bIsActive)
+	{
+		return false;
+	}
+
+	if (Force || HasEnoughMana(BaseManaCost))
+	{
+		Mana->Add(-BaseManaCost);
+		return true;
+	}
+	return false;
+}
+
+bool UStatsComponent::HasEnoughMana(float BaseManaCost)
+{
+	return GetRealManaCost(BaseManaCost) < Mana->Value;
+}
+
+float UStatsComponent::GetRealManaCost(float BaseManaCost)
+{
+	return BaseManaCost;
+}
+
 bool UStatsComponent::Kill()
 {
 	bIsAlive = false;

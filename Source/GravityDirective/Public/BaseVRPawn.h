@@ -37,6 +37,15 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
 	class UStaticMeshComponent* RightHandMesh;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
+	class USceneComponent* HipAttachRoot;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
+	class USceneComponent* HipAttachPoint;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
+	class AActor* HipAttachedActor;
+
 public:
 	// Sets default values for this pawn's properties
 	ABaseVRPawn();
@@ -56,4 +65,9 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	UFUNCTION(BlueprintCallable)
+	void AttachToHip(class AActor* AttachActor);
+
+	UFUNCTION(BlueprintCallable)
+	void UnattachHipActor();
 };

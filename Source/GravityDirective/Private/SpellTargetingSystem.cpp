@@ -47,3 +47,18 @@ void USpellTargetingSystem::Activate_Implementation(const FTargetingActivatePayl
     CasterComponent = Payload.CasterComponent;
     CasterActor = Payload.CasterActor;
 }
+
+bool USpellTargetingSystem::UsesDirectionTarget()
+{
+    return bUsesDirectionTarget;
+}
+
+bool USpellTargetingSystem::UsesLocationTarget()
+{
+    return bUsesLocationTarget;
+}
+
+bool USpellTargetingSystem::UsesActorTarget()
+{
+    return bUsesActorTarget;
+}

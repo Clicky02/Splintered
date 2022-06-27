@@ -35,6 +35,12 @@ ABaseVRPawn::ABaseVRPawn()
 	RightHandMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Right Hand Mesh"));
 	RightHandMesh->AttachToComponent(RightHandMotionControllerComponent, FAttachmentTransformRules::KeepWorldTransform);
 
+	HipAttachRoot = CreateDefaultSubobject<USceneComponent>(TEXT("Hip Attach Point"));
+	HipAttachRoot->AttachToComponent(CameraRig, FAttachmentTransformRules::KeepRelativeTransform);
+
+	HipAttachPoint = CreateDefaultSubobject<USceneComponent>(TEXT("Hip Attach Root"));
+	HipAttachPoint->AttachToComponent(HipAttachRoot, FAttachmentTransformRules::KeepRelativeTransform);
+
 }
 
 // Called when the game starts or when spawned
@@ -53,7 +59,12 @@ FVector ABaseVRPawn::GetCameraPosition()
 void ABaseVRPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	
+	FRotator Rotation = VRCameraComponent->GetRelativeRotation();
+	Rotation.Pitch = 0;
+	Rotation.Roll = 0;
 
+	HipAttachRoot->SetRelativeLocationAndRotation(VRCameraComponent->GetRelativeLocation(), Rotation);
 }
 
 // Called to bind functionality to input
@@ -61,5 +72,17 @@ void ABaseVRPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+}
+
+void ABaseVRPawn::AttachToHip(AActor* AttachActor)
+{
+	AttachActor->AttachToComponent(HipAttachPoint, FAttachmentTransformRules::SnapToTargetIncludingScale);
+	HipAttachedActor = AttachActor;
+}
+
+void ABaseVRPawn::UnattachHipActor()
+{
+	HipAttachedActor->DetachRootComponentFromParent(true);
+	HipAttachedActor = nullptr;
 }
 
