@@ -133,27 +133,36 @@ void UStatsComponent::SetTeam(int32 NewTeam)
 
 void UStatsComponent::Damage(float Damage)
 {
-	float DamageDealt = Damage;
-
-	if (Armor->bIsActive)
+	if (bIsAlive)
 	{
-		DamageDealt -= Armor->Value;
+		float DamageDealt = Damage;
+
+		if (Armor->bIsActive)
+		{
+			DamageDealt -= Armor->Value;
+		}
+
+		OutgoingDamageModifier[1];
+
+		if (IncomingDamageModifier->bIsActive)
+		{
+			DamageDealt *= IncomingDamageModifier->Value;
+		}
+
+		if (DamageDealt < 0)
+		{
+			DamageDealt = 0;
+		}
+
+
+		Health->Add(-DamageDealt);
+
+		if (Health->Value <= 0)
+		{
+			Kill();
+		}
 	}
 
-	OutgoingDamageModifier[1];
-
-	if (IncomingDamageModifier->bIsActive)
-	{
-		DamageDealt *= IncomingDamageModifier->Value;
-	}
-
-	if (DamageDealt < 0)
-	{
-		DamageDealt = 0;
-	}
-
-
-	Health->Add(-DamageDealt);
 }
 
 bool UStatsComponent::IsAlive()
@@ -189,6 +198,8 @@ float UStatsComponent::GetRealManaCost(float BaseManaCost)
 bool UStatsComponent::Kill()
 {
 	bIsAlive = false;
+
+	RemoveAllStatusEffects();
 
 	FOnDeathPayload Payload;
 	Payload.StatsComponent = this;
@@ -232,6 +243,7 @@ void UStatsComponent::RemoveStatusEffect(TSubclassOf<UStatusEffect> StatusEffect
 {
 	UStatusEffect* CurrentEffect = GetStatusEffect(StatusEffect);
 
+
 	if (CurrentEffect)
 	{
 		if (NumStacks > 0)
@@ -240,8 +252,18 @@ void UStatsComponent::RemoveStatusEffect(TSubclassOf<UStatusEffect> StatusEffect
 		}
 		else
 		{
+			CurrentEffect->EndStatusEffect();
 			ActiveStatusEffects.Remove(CurrentEffect);
 		}
+	}
+}
+
+void UStatsComponent::RemoveAllStatusEffects()
+{
+	while (ActiveStatusEffects.Num() > 0)
+	{
+		ActiveStatusEffects[0]->EndStatusEffect();
+		ActiveStatusEffects.RemoveAt(0);
 	}
 }
 

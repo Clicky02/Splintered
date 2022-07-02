@@ -139,6 +139,9 @@ public:
 	void RemoveStatusEffect(TSubclassOf<UStatusEffect> StatusEffect, float NumStacks = -1);
 
 	UFUNCTION(BlueprintCallable, Category = "Stats")
+	void RemoveAllStatusEffects();
+
+	UFUNCTION(BlueprintCallable, Category = "Stats")
 	UStatusEffect* GetStatusEffect(TSubclassOf<UStatusEffect> StatusEffect);
 
 	UFUNCTION(BlueprintCallable, Category = "Stats")

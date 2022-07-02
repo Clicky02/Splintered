@@ -44,6 +44,9 @@ protected:
 	bool bUsesLocationTarget = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Targeting")
+	bool bUsesTransformTarget = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Targeting")
 	class UBaseSpell* Spell;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Targeting")
@@ -86,13 +89,19 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Targeting")
 	bool UsesActorTarget();
 
+	UFUNCTION(BlueprintCallable, Category = "Targeting")
+	bool UsesTransformTarget();
 
-	UFUNCTION(BlueprintImplementableEvent, Category = "Targeting")
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Targeting")
 	FVector GetDirectionTarget();
 
-	UFUNCTION(BlueprintImplementableEvent, Category = "Targeting")
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Targeting")
 	void GetLocationTarget(TArray<FVector>& Result);
 
-	UFUNCTION(BlueprintImplementableEvent, Category = "Targeting")
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Targeting")
 	void GetActorTarget(TArray<AActor*>& Result);
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Targeting")
+	FTransform GetTransformTarget();
 };

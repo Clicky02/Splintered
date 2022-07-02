@@ -38,7 +38,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnStatModifierApplied, const FOnSta
 /**
  * 
  */
-UCLASS()
+UCLASS(DefaultToInstanced, EditInlineNew, Blueprintable)
 class GRAVITYDIRECTIVE_API UStat : public UObject, public FTickableGameObject
 {
 	GENERATED_BODY()

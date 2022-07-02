@@ -51,7 +51,7 @@ void UBaseSpell::Activate_Implementation(const FSpellActivatePayload& Payload)
     CasterComponent = Payload.CasterComponent;
     CasterActor = Payload.CasterActor;
 
-    StatsComponent = Cast<UStatsComponent>(CasterActor->GetComponentByClass(UStatsComponent::StaticClass()));
+    StatsComponent = Cast<UStatsComponent>(Wielder->GetComponentByClass(UStatsComponent::StaticClass()));
 
     FSpellActivationActivatePayload ActivationPayload;
     ActivationPayload.Wielder = Wielder;
@@ -88,18 +88,40 @@ void UBaseSpell::Tick_Implementation(float DeltaTime)
 }
 
 
-void UBaseSpell::StartTargeting()
+bool UBaseSpell::StartTargeting()
 {
     Activation->EndDetecting();
 
-    if (TargetingSystem)
+    if (StatsComponent && bUseManaBeforeTargeting && StatsComponent->Mana->IsActive())
     {
-        bIsTargeting = true;
-        TargetingSystem->StartTargeting();
+        if (StatsComponent->UseMana(ManaCost))
+        {
+            if (TargetingSystem)
+            {
+                bIsTargeting = true;
+                TargetingSystem->StartTargeting();
+            }
+            else
+            {
+                CastSpell();
+            }
+            return true;
+        }
+
+        return false;
     }
     else
     {
-        CastSpell();
+        if (TargetingSystem)
+        {
+            bIsTargeting = true;
+            TargetingSystem->StartTargeting();
+        }
+        else
+        {
+            CastSpell();
+        }
+        return true;
     }
     
 }
@@ -109,6 +131,8 @@ void UBaseSpell::EndTargeting()
     bIsTargeting = false;
 
     if (TargetingSystem) TargetingSystem->EndTargeting();
+
+    CastSpell();
 }
 
 FName UBaseSpell::GetName()
@@ -123,7 +147,7 @@ UStaticMesh* UBaseSpell::GetItemDisplayMesh()
 
 bool UBaseSpell::CastSpell()
 {
-    if (StatsComponent)
+    if (StatsComponent && !bUseManaBeforeTargeting)
     {
         if (StatsComponent->UseMana(ManaCost))
         {

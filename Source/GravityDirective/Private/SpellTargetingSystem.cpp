@@ -62,3 +62,8 @@ bool USpellTargetingSystem::UsesActorTarget()
 {
     return bUsesActorTarget;
 }
+
+bool USpellTargetingSystem::UsesTransformTarget()
+{
+    return bUsesTransformTarget;
+}

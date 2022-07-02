@@ -314,6 +314,8 @@ bool UStat::IsActive()
 
 void UStat::Set(float NewValue)
 {
+	if (NewValue > MaxValue) NewValue = MaxValue;
+	else if (NewValue < MinValue) NewValue = MinValue;
 	float OldValue = Value;
 	BaseValue = NewValue;
 	Value = BaseValue;

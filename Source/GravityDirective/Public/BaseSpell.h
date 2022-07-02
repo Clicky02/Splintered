@@ -47,6 +47,9 @@ protected:
 	bool bIsCasting = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spell")
+	bool bUseManaBeforeTargeting = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spell")
 	ESpellSlot SpellSlot = ESpellSlot::None;
 
 	UPROPERTY(EditAnywhere, Category = "Spell")
@@ -112,7 +115,7 @@ public:
 	void Unprime();
 
 	UFUNCTION(BlueprintCallable, Category = "Spell")
-	void StartTargeting();
+	bool StartTargeting();
 
 	UFUNCTION(BlueprintCallable, Category = "Spell")
 	void EndTargeting();
