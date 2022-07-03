@@ -4,6 +4,7 @@
 #include "StatsComponent.h"
 #include <Runtime/AIModule/Classes/AIController.h>
 #include "BrainComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 TArray<AActor*> UStatsComponent::StatActors = TArray<AActor*>();
 
@@ -208,17 +209,25 @@ bool UStatsComponent::Kill()
 
 	APawn* Pawn = Cast<APawn>(GetOwner());
 
-	if (IsValid(Pawn))
+	bool isPlayer = Pawn == UGameplayStatics::GetPlayerPawn(this, 0);
+
+	if (IsValid(Pawn) && !isPlayer)
 	{
 		AAIController* Controller = Cast<AAIController>(Pawn->GetController());
 
 		if (IsValid(Controller))
 		{
-			Controller->GetBrainComponent()->StopLogic("Dead");
+			if (IsValid(Controller->GetBrainComponent()))
+			{
+				Controller->GetBrainComponent()->StopLogic("Dead");
+			}
 		}
 	}
 
-	StatActors.Remove(GetOwner());
+	if (!isPlayer)
+	{
+		StatActors.Remove(GetOwner());
+	}
 
 	return true;
 }
