@@ -217,10 +217,9 @@ bool UStatsComponent::Kill()
 
 		if (IsValid(Controller))
 		{
-			if (IsValid(Controller->GetBrainComponent()))
-			{
-				Controller->GetBrainComponent()->StopLogic("Dead");
-			}
+			if (GEngine)
+				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Stop Logic!"));
+			Controller->GetBrainComponent()->StopLogic("Dead");
 		}
 	}
 

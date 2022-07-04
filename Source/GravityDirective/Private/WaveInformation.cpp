@@ -47,7 +47,7 @@ TArray<FWaveEnemy> UWaveInformation::GetWaveEnemies(int WaveNumber, int Subwave,
     {
         FWaveEnemyGeneralProfile Enemy = WaveEnemies[i];
 
-        int DeltaWave = Enemy.StartingWave - WaveNumber;
+        int DeltaWave = WaveNumber - Enemy.StartingWave;
         
         if (DeltaWave >= 0)
         {
@@ -103,6 +103,7 @@ TArray<FWaveEnemy> UWaveInformation::GetWaveEnemies(int WaveNumber, int Subwave,
     if (MaxEnemies < 1) MaxEnemies = 1;
 
     FWaveEnemyInstanceProfile HighestWeightedEnemy;
+    int highestWeightedEnemyIndex = 0;
 
     for (int i = 0; i < ViableEnemies.Num(); i++)
     {
@@ -116,13 +117,18 @@ TArray<FWaveEnemy> UWaveInformation::GetWaveEnemies(int WaveNumber, int Subwave,
             if (HighestWeightedEnemy.Weight < Enemy.Weight)
             {
                 HighestWeightedEnemy = Enemy;
+                highestWeightedEnemyIndex = i;
             }
         }
+
+        ViableEnemies[i] = Enemy;
     }
 
     // Make any corrections to the enemy with the most weight
     HighestWeightedEnemy.Count += EnemiesToSplit - CurrentEnemies;
     if (HighestWeightedEnemy.Count < 0) HighestWeightedEnemy.Count = 0;
+
+    ViableEnemies[highestWeightedEnemyIndex] = HighestWeightedEnemy;
 
     TArray<FWaveEnemy> Enemies;
     for (int i = 0; i < ViableEnemies.Num(); i++)
