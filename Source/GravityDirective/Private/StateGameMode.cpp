@@ -18,9 +18,6 @@ void AStateGameMode::BeginPlay()
 
 	CurrentState = StartingState;
 	CurrentState->StartState();
-
-	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Some debug message!"));
-
 }
 
 // Called every frame
@@ -33,8 +30,11 @@ void AStateGameMode::Tick(float DeltaTime)
 
 void AStateGameMode::SetState(UGameModeState* NewState)
 {
-	CurrentState->EndState();
-	CurrentState = NewState;
-	CurrentState->StartState();
+	if (bAllowChangingState)
+	{
+		CurrentState->EndState();
+		CurrentState = NewState;
+		CurrentState->StartState();
+	}
 }
 

@@ -29,6 +29,9 @@ struct FWaveEnemyGeneralProfile
 	int WavesPerLevelIncrease;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Wave")
+	int EnemySlotsConsumed = 1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Wave")
 	bool bUseWeight;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Wave")
@@ -66,6 +69,9 @@ struct FWaveEnemyInstanceProfile
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Wave")
 	float Weight = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Wave")
+	int EnemySlotsConsumed = 1;
 };
 
 USTRUCT(BlueprintType)

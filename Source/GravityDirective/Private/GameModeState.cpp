@@ -10,6 +10,12 @@ void UGameModeState::Init(FTickSignature TickFunc, FOnStartSignature OnStartFunc
 	OnEnd = OnEndFunc;
 }
 
+void UGameModeState::Init(FOnStartSignature OnStartFunc, FOnEndSignature OnEndFunc)
+{
+	OnStart = OnStartFunc;
+	OnEnd = OnEndFunc;
+}
+
 void UGameModeState::StartState()
 {
 	bIsActive = true;
@@ -34,5 +40,12 @@ UGameModeState* UGameModeState::CreateGameModeSate(FTickSignature TickFunc, FOnS
 {
 	UGameModeState* NewState = NewObject<UGameModeState>();
 	NewState->Init(TickFunc, OnStartFunc, OnEndFunc);
+	return NewState;
+}
+
+UGameModeState* UGameModeState::CreateBasicGameModeState(FOnStartSignature OnStartFunc, FOnEndSignature OnEndFunc)
+{
+	UGameModeState* NewState = NewObject<UGameModeState>();
+	NewState->Init(OnStartFunc, OnEndFunc);
 	return NewState;
 }

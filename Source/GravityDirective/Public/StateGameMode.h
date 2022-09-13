@@ -16,6 +16,9 @@ class GRAVITYDIRECTIVE_API AStateGameMode : public AGameModeBase
 	GENERATED_BODY()
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bAllowChangingState = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UGameModeState* StartingState;
 	UGameModeState* CurrentState;
 public:

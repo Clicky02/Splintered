@@ -115,7 +115,7 @@ public:
 	void SetTeam(int32 NewTeam);
 
 	UFUNCTION(BlueprintCallable, Category = "Stats")
-	virtual void Damage(float Damage);
+	virtual void Damage(float Damage, UStatsComponent* OtherStats = nullptr);
 
 	UFUNCTION(BlueprintCallable, Category = "Stats")
 	bool IsAlive();

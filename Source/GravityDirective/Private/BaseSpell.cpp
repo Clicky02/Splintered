@@ -4,6 +4,7 @@
 #include "BaseSpell.h"
 #include "StatsComponent.h"
 #include "..\Public\BaseSpell.h"
+#include "CasterComponent.h"
 
 
 UWorld* UBaseSpell::GetWorld() const
@@ -98,24 +99,23 @@ bool UBaseSpell::StartTargeting()
         {
             if (TargetingSystem)
             {
-                bIsTargeting = true;
-                TargetingSystem->StartTargeting();
+                TargetSuccessfully();
             }
             else
             {
-                CastSpell();
+                CastSuccessfully();
             }
             return true;
         }
 
+        CastFail();
         return false;
     }
     else
     {
         if (TargetingSystem)
         {
-            bIsTargeting = true;
-            TargetingSystem->StartTargeting();
+            TargetSuccessfully();
         }
         else
         {
@@ -126,14 +126,63 @@ bool UBaseSpell::StartTargeting()
     
 }
 
+// If ever add a fail targeting make sure to call EndSpellCast()
 void UBaseSpell::EndTargeting()
 {
     bIsTargeting = false;
 
     if (TargetingSystem) TargetingSystem->EndTargeting();
 
+    if (WandOccupationTime == EWandOccupationType::WhileTargeting)
+    {
+        bIsOccupyingWand = false;
+        CasterComponent->SetWandOccupied(SpellSlot, false);
+    }
+
     CastSpell();
 }
+
+void UBaseSpell::CastSuccessfully()
+{
+    bIsCasting = true;
+    if (WandOccupationTime == EWandOccupationType::WhileCasting || WandOccupationTime == EWandOccupationType::AtCast)
+    {
+        bIsOccupyingWand = true;
+        CasterComponent->SetWandOccupied(SpellSlot, true);
+    }
+    OnCastSpell();
+    if (WandOccupationTime == EWandOccupationType::AtCast)
+    {
+        bIsOccupyingWand = false;
+        CasterComponent->SetWandOccupied(SpellSlot, false);
+    }
+}
+
+void UBaseSpell::CastFail()
+{
+    bIsCasting = false;
+
+    CasterComponent->SetWandOnCooldown();
+
+    OnCastFail();
+}
+
+void UBaseSpell::TargetSuccessfully()
+{
+    bIsTargeting = true;
+    if (WandOccupationTime == EWandOccupationType::WhileTargeting || WandOccupationTime == EWandOccupationType::AtTargetingBegin)
+    {
+        bIsOccupyingWand = true;
+        CasterComponent->SetWandOccupied(SpellSlot, true);
+    }
+    TargetingSystem->StartTargeting();
+    if (WandOccupationTime == EWandOccupationType::AtTargetingBegin)
+    {
+        bIsOccupyingWand = false;
+        CasterComponent->SetWandOccupied(SpellSlot, false);
+    }
+}
+
 
 FName UBaseSpell::GetName()
 {
@@ -151,20 +200,21 @@ bool UBaseSpell::CastSpell()
     {
         if (StatsComponent->UseMana(ManaCost))
         {
-            OnCastSpell();
+            CastSuccessfully();
             return true;
         }
         else if (!StatsComponent->Mana->IsActive())
         {
-            OnCastSpell();
+            CastSuccessfully();
             return true;
         }
 
+        CastFail();
         return false;
     }
     else
     {
-        OnCastSpell();
+        CastSuccessfully();
         return true;
     }
 }
@@ -187,8 +237,23 @@ void UBaseSpell::Unprime()
     {
         Activation->EndDetecting();
     }
+    else if (bIsCasting)
+    {
+        EndSpellCast();
+    }
 
     bIsPrimed = false;
     bIsTargeting = false;
     bIsCasting = false;
+}
+
+void UBaseSpell::EndSpellCast()
+{
+    bIsCasting = false;
+
+    if (WandOccupationTime == EWandOccupationType::WhileCasting)
+    {
+        bIsOccupyingWand = false;
+        CasterComponent->SetWandOccupied(SpellSlot, false);
+    }
 }

@@ -20,7 +20,10 @@ void ABaseMapManager::BeginPlay()
 
 	Main = this;
 	
-	WaveInfo = NewObject<UWaveInformation>(this, WaveInfoType);
+	if (WaveInfoType != nullptr)
+	{
+		WaveInfo = NewObject<UWaveInformation>(this, WaveInfoType);
+	}
 }
 
 // Called every frame

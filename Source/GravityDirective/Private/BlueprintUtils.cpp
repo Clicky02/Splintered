@@ -72,3 +72,15 @@ FString UBlueprintUtils::GetStatName(EStatVariant Stat)
 
 	return FString(TEXT("Invalid"));
 }
+
+float UBlueprintUtils::Round(float in)
+{
+	return FMath::RoundHalfFromZero(in * 1000.0f) * 0.001f;
+}
+
+bool UBlueprintUtils::IsOnSameTeam(int Team1, int Team2)
+{
+	if (Team1 == -1) return false;
+	else if (Team1 == Team2) return true;
+	else return false;
+}

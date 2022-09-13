@@ -15,32 +15,31 @@ ABaseVRPawn::ABaseVRPawn()
 	CameraRig = CreateDefaultSubobject<USceneComponent>(TEXT("Camera Rig"));
 
 	VRCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("VR Camera"));
-	VRCameraComponent->AttachToComponent(CameraRig, FAttachmentTransformRules::KeepRelativeTransform);
+	VRCameraComponent->SetupAttachment(CameraRig);
 
 	LeftHandMotionControllerComponent = CreateDefaultSubobject<UMotionControllerComponent>(TEXT("Motion Controller Left"));
-	LeftHandMotionControllerComponent->AttachToComponent(CameraRig, FAttachmentTransformRules::KeepRelativeTransform);
+	LeftHandMotionControllerComponent->SetupAttachment(CameraRig);
 
 	LeftHandPosition = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Left Hand Position"));
-	LeftHandPosition->AttachToComponent(LeftHandMotionControllerComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	LeftHandPosition->SetupAttachment(LeftHandMotionControllerComponent);
 
 	LeftHandSkeletalMesh =  CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Left Hand Skeletal Mesh"));
-	LeftHandSkeletalMesh->AttachToComponent(LeftHandMotionControllerComponent, FAttachmentTransformRules::KeepWorldTransform);
+	LeftHandSkeletalMesh->SetupAttachment(LeftHandMotionControllerComponent);;
 
 	RightHandMotionControllerComponent = CreateDefaultSubobject<UMotionControllerComponent>(TEXT("Motion Controller Right"));
-	RightHandMotionControllerComponent->AttachToComponent(CameraRig, FAttachmentTransformRules::KeepRelativeTransform);
+	RightHandMotionControllerComponent->SetupAttachment(CameraRig);
 
 	RightHandPosition = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Right Hand Position"));
-	RightHandPosition->AttachToComponent(RightHandMotionControllerComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	RightHandPosition->SetupAttachment(RightHandMotionControllerComponent);
 
 	RightHandMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Right Hand Mesh"));
-	RightHandMesh->AttachToComponent(RightHandMotionControllerComponent, FAttachmentTransformRules::KeepWorldTransform);
+	RightHandMesh->SetupAttachment(RightHandMotionControllerComponent);
 
 	HipAttachRoot = CreateDefaultSubobject<USceneComponent>(TEXT("Hip Attach Point"));
-	HipAttachRoot->AttachToComponent(CameraRig, FAttachmentTransformRules::KeepRelativeTransform);
+	HipAttachRoot->SetupAttachment(CameraRig);
 
 	HipAttachPoint = CreateDefaultSubobject<USceneComponent>(TEXT("Hip Attach Root"));
-	HipAttachPoint->AttachToComponent(HipAttachRoot, FAttachmentTransformRules::KeepRelativeTransform);
-
+	HipAttachPoint->SetupAttachment(HipAttachRoot);
 }
 
 // Called when the game starts or when spawned

@@ -28,6 +28,12 @@ class GRAVITYDIRECTIVE_API UCasterComponent : public UActorComponent, public IHe
 
 	bool bIsActivated = false;
 
+	bool bPrimeButtonPressed = false;
+
+	float CurrentPrimeDelay = -1;
+
+	float MaxPrimeDelay = 0.6f;
+
 	bool bIsPrimed = false;
 
 	bool bIsCasting = false;
@@ -46,6 +52,15 @@ class GRAVITYDIRECTIVE_API UCasterComponent : public UActorComponent, public IHe
 	bool bCasterStanceIsDirty = true;
 	ECasterStance CasterStance = ECasterStance::None;
 
+	const int NumLocations = 10;
+	int CurrentLocationIndex = 0;
+	TArray<FVector> Locations;
+	TArray<float> LocationTimes;
+
+	bool bVelocityIsDirty = true;
+	FVector Velocity;
+
+	USceneComponent* VelComp;
 
 protected:
 
@@ -108,7 +123,10 @@ public:
 	UBaseSpell* GetSpell(ESpellSlot Slot);
 
 	UFUNCTION(BlueprintCallable, Category = "Caster")
-	void SetCasting(ESpellSlot SpellSlot, bool IsCasting);
+	void SetWandOccupied(ESpellSlot SpellSlot, bool IsOccupied);
+
+	UFUNCTION(BlueprintCallable, Category = "Caster")
+	void SetWandOnCooldown();
 
 	UFUNCTION(BlueprintCallable, Category = "Caster")
 	AActor* GetWielder();
@@ -120,6 +138,9 @@ public:
 	UStaticMeshComponent* GetStaticMesh();
 
 	UFUNCTION(BlueprintCallable, Category = "Caster")
+	FVector GetVelocity();
+
+	UFUNCTION(BlueprintCallable, Category = "Caster")
 	float GetForwardVelocity();
 
 	UFUNCTION(BlueprintCallable, Category = "Caster")
@@ -127,6 +148,12 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Caster")
 	FVector GetOutwardDirection();
+
+	UFUNCTION(BlueprintCallable, Category = "Caster")
+	FTransform GetCastPointTansform();
+
+	UFUNCTION(BlueprintCallable, Category = "Caster")
+	FVector GetCastPointForward();
 
 	// Currently will only return upward, sideways, or none
 	UFUNCTION(BlueprintCallable, Category = "Caster")

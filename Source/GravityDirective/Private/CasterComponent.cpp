@@ -2,11 +2,12 @@
 
 #define PERPINDICULAR_TO_OUTWARD_DOT_TOLERANCE 0.3
 #define PERPINDICULAR_TO_UP_DOT_TOLERANCE 0.12
-#define UPWARD_DOT_MIN 0.9
+#define UPWARD_DOT_MIN 0.72
 
 #include "CasterComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include <GravityDirective/Public/BaseVRPawn.h>
+#include <Runtime/Engine/Classes/Kismet/GameplayStatics.h>
 
 const float MIN_UPWARD_DISTANCE = 50;
 
@@ -17,8 +18,15 @@ UCasterComponent::UCasterComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
+	Locations.AddUninitialized(10);
+	LocationTimes.AddUninitialized(10);
+
 	// ...
 }
+
+// Instead, listen to events on the spells?
+// Replace spell slots with array?
+// Make spells components?
 
 
 // Called when the game starts
@@ -57,6 +65,26 @@ void UCasterComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 	bOutwardVelocityIsDirty = true;
 	bOutwardDirectionIsDirty = true;
 	bCasterStanceIsDirty = true;
+	bVelocityIsDirty = true;
+
+	if (!bIsPrimed)
+	{
+		if (CurrentPrimeDelay >= 0)
+		{
+			CurrentPrimeDelay -= DeltaTime;
+		}
+
+		if (CurrentPrimeDelay < 0 && bPrimeButtonPressed)
+		{
+			bIsPrimed = true;
+			PrimeAll();
+		}
+	}
+
+	CurrentLocationIndex++;
+	if (CurrentLocationIndex >= NumLocations) CurrentLocationIndex = 0;
+	Locations[CurrentLocationIndex] = VelComp->GetComponentLocation();
+	LocationTimes[CurrentLocationIndex] = UGameplayStatics::GetRealTimeSeconds(GetWorld());
 
 	if (PrimarySpell) PrimarySpell->Tick(DeltaTime);
 	if (UpwardSpell) UpwardSpell->Tick(DeltaTime);
@@ -79,21 +107,20 @@ UBaseSpell* UCasterComponent::GetSpell(ESpellSlot Slot) {
 	}
 }
 
-void UCasterComponent::SetCasting(ESpellSlot SpellSlot, bool IsCasting)
+void UCasterComponent::SetWandOccupied(ESpellSlot SpellSlot, bool IsOccupied)
 {
-
-	if (!bIsCasting && IsCasting) 
+	if (!bIsCasting && IsOccupied)
 	{
-		bIsCasting = IsCasting;
+		bIsCasting = IsOccupied;
+
 		if (PrimarySpell && SpellSlot != ESpellSlot::Primary) PrimarySpell->Unprime();
 		if (UpwardSpell && SpellSlot != ESpellSlot::Upward) UpwardSpell->Unprime();
 		if (DownwardSpell && SpellSlot != ESpellSlot::Downward) DownwardSpell->Unprime();
 		if (BlockingSpell && SpellSlot != ESpellSlot::Block) BlockingSpell->Unprime();
 	}
-	else if (bIsCasting && !IsCasting)
+	else if (bIsCasting && !IsOccupied)
 	{
-		bIsCasting = IsCasting;
-		PrimeAll();
+		SetWandOnCooldown();
 	}
 
 	
@@ -102,6 +129,20 @@ void UCasterComponent::SetCasting(ESpellSlot SpellSlot, bool IsCasting)
 AActor* UCasterComponent::GetWielder()
 {
 	return Player;
+}
+
+void UCasterComponent::SetWandOnCooldown()
+{
+	bIsCasting = false;
+
+	UnprimeAll();
+
+	bIsPrimed = false;
+
+	if (bPrimeButtonPressed)
+	{
+		CurrentPrimeDelay = MaxPrimeDelay;
+	}
 }
 
 UMeshComponent* UCasterComponent::GetConnectedHand()
@@ -114,18 +155,26 @@ UStaticMeshComponent* UCasterComponent::GetStaticMesh()
 	return CasterActorMesh;
 }
 
+FVector UCasterComponent::GetVelocity()
+{
+	if (bVelocityIsDirty)
+	{
+		int LastIndex = CurrentLocationIndex - 1;
+		if (LastIndex < 0) LastIndex = 9;
+
+		Velocity = (Locations[CurrentLocationIndex] - Locations[LastIndex]) / (LocationTimes[CurrentLocationIndex] - LocationTimes[LastIndex]);
+		
+		bVelocityIsDirty = false;
+	}
+
+	return Velocity;
+}
+
 float UCasterComponent::GetForwardVelocity()
 {
 	if (bForwardVelocityIsDirty)
-	{
-		USceneComponent* VelComp = ConnectedHand;
-
-		if (!VelComp)
-		{
-			VelComp = GetOwner()->GetRootComponent();
-		}
-		
-		FVector Vel = VelComp->GetComponentVelocity();
+	{	
+		FVector Vel = GetVelocity();
 
 		ForwardVelocity = Vel.Dot(UKismetMathLibrary::GetForwardVector(CasterActorMesh->GetSocketRotation("CastPoint")));
 		bForwardVelocityIsDirty = false;
@@ -138,14 +187,7 @@ float UCasterComponent::GetOutwardVelocity()
 {
 	if (bOutwardVelocityIsDirty)
 	{
-		USceneComponent* VelComp = ConnectedHand;
-
-		if (!VelComp)
-		{
-			VelComp = GetOwner()->GetRootComponent();
-		}
-
-		OutwardVelocity = VelComp->GetComponentVelocity().Dot(GetOutwardDirection());
+		OutwardVelocity = GetVelocity().Dot(GetOutwardDirection());
 		bOutwardVelocityIsDirty = false;
 	}
 
@@ -156,12 +198,6 @@ FVector UCasterComponent::GetOutwardDirection()
 {
 	if (bOutwardDirectionIsDirty)
 	{
-		USceneComponent* VelComp = ConnectedHand;
-
-		if (!VelComp)
-		{
-			VelComp = GetOwner()->GetRootComponent();
-		}
 
 		ABaseVRPawn* Pawn = Cast<ABaseVRPawn>(Player);
 
@@ -185,6 +221,16 @@ FVector UCasterComponent::GetOutwardDirection()
 	}
 
 	return OutwardDirection;
+}
+
+FTransform UCasterComponent::GetCastPointTansform()
+{
+	return CasterActorMesh->GetSocketTransform("CastPoint");
+}
+
+FVector UCasterComponent::GetCastPointForward()
+{
+	return UKismetMathLibrary::GetForwardVector(CasterActorMesh->GetSocketRotation("CastPoint"));
 }
 
 ECasterStance UCasterComponent::GetCasterStance()
@@ -220,7 +266,6 @@ ECasterStance UCasterComponent::GetCasterStance()
 
 void UCasterComponent::SetSpell(UBaseSpell* Spell)
 {
-
 	if (Spell)
 	{
 		switch (Spell->GetSpellSlot()) {
@@ -315,6 +360,12 @@ void UCasterComponent::BeginControl_Implementation(const FBeginControlPayload& P
 	if (DownwardSpell) DownwardSpell->Activate(ActivatePayload);
 	if (BlockingSpell) BlockingSpell->Activate(ActivatePayload);
 	
+	VelComp = ConnectedHand;
+
+	if (!VelComp)
+	{
+		VelComp = GetOwner()->GetRootComponent();
+	}
 }
 
 void UCasterComponent::EndControl_Implementation()
@@ -334,20 +385,28 @@ void UCasterComponent::EndControl_Implementation()
 
 	bIsActivated = false;
 	bIsPrimed = false;
-	
+	bPrimeButtonPressed = false;
 }
 
 void UCasterComponent::PrimaryPressed_Implementation()
 {
+	bPrimeButtonPressed = true;
 
-	bIsPrimed = true;
+	if (!bIsPrimed && CurrentPrimeDelay < 0)
+	{
+		bIsPrimed = true;
+		PrimeAll();
+	}
 
-	PrimeAll();
 }
 
 void UCasterComponent::PrimaryReleased_Implementation()
 {
-	bIsPrimed = false;
+	bPrimeButtonPressed = false;
 
-	UnprimeAll();
+	if (bIsPrimed)
+	{
+		bIsPrimed = false;
+		UnprimeAll();
+	}
 }

@@ -29,10 +29,14 @@ private:
 
 public:
 	void Init(FTickSignature TickFunc, FOnStartSignature OnStartFunc, FOnEndSignature OnEndFunc);
+	void Init(FOnStartSignature OnStartFunc, FOnEndSignature OnEndFunc);
 	void StartState();
 	void TickState(float DeltaTime);
 	void EndState();
 
 	UFUNCTION(BlueprintCallable, Category = "Helper")
 	static UGameModeState* CreateGameModeSate(FTickSignature TickFunc, FOnStartSignature OnStartFunc, FOnEndSignature OnEndFunc);
+
+	UFUNCTION(BlueprintCallable, Category = "Helper")
+	static UGameModeState* CreateBasicGameModeState(FOnStartSignature OnStartFunc, FOnEndSignature OnEndFunc);
 };

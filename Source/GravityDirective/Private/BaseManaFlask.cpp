@@ -12,7 +12,7 @@ ABaseManaFlask::ABaseManaFlask()
 	Flask = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Flask"));
 
 	FlaskFill = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FlaskFill"));
-	FlaskFill->AttachToComponent(Flask, FAttachmentTransformRules::KeepRelativeTransform);
+	FlaskFill->SetupAttachment(Flask);
 }
 
 // Called when the game starts or when spawned

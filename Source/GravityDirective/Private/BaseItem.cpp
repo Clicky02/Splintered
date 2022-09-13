@@ -9,16 +9,16 @@ ABaseItem::ABaseItem()
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 
 	DisplayMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Display Mesh"));
-	DisplayMesh->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
+	DisplayMesh->SetupAttachment(Root);
 
 	NameDisplay = CreateDefaultSubobject<UTextRenderComponent>(TEXT("Name Display"));
-	NameDisplay->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
+	NameDisplay->SetupAttachment(Root);
 
 	DetailDisplay = CreateDefaultSubobject<UTextRenderComponent>(TEXT("Detail Display"));
-	DetailDisplay->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
+	DetailDisplay->SetupAttachment(Root);
 
 	Hitbox = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Hitbox"));
-	Hitbox->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
+	Hitbox->SetupAttachment(Root);
 
 	FacePlayerComponent = CreateDefaultSubobject<UFacePlayer>(TEXT("Face Player"));
 }

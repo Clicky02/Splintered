@@ -9,6 +9,16 @@
 #include "SpellActivation.h"
 #include "BaseSpell.generated.h"
 
+UENUM(BlueprintType)
+enum class EWandOccupationType: uint8
+{
+	Never UMETA(DisplayName = "Never"),
+	AtTargetingBegin UMETA(DisplayName = "AtTargetingBegin"),
+	WhileTargeting UMETA(DisplayName = "WhileTargeting"),
+	AtCast UMETA(DisplayName = "AtCast"),
+	WhileCasting UMETA(DisplayName = "WhileCasting"),
+
+};
 
 USTRUCT(BlueprintType)
 struct FSpellActivatePayload
@@ -34,6 +44,8 @@ class GRAVITYDIRECTIVE_API UBaseSpell : public UObject
 	
 protected:
 
+	bool bIsOccupyingWand = false;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spell")
 	FName Name = TEXT("Unnamed");
 
@@ -48,6 +60,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spell")
 	bool bUseManaBeforeTargeting = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spell")
+	EWandOccupationType WandOccupationTime = EWandOccupationType::AtCast;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spell")
 	ESpellSlot SpellSlot = ESpellSlot::None;
@@ -131,4 +146,17 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Spell")
 	void OnCastSpell();
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Spell")
+	void OnCastFail();
+
+	UFUNCTION(BlueprintCallable, Category = "Spell")
+	void EndSpellCast();
+
+private:
+	void CastSuccessfully();
+
+	void CastFail();
+
+	void TargetSuccessfully();
 };

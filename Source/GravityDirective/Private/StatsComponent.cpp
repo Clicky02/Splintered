@@ -48,7 +48,14 @@ void UStatsComponent::BeginPlay()
 	OutgoingDamageModifier->RefreshValues();
 	IncomingDamageModifier->RefreshValues();
 
-	StatActors.Add(GetOwner());
+	APawn* Pawn = Cast<APawn>(GetOwner());
+
+	bool isPlayer = Pawn == UGameplayStatics::GetPlayerPawn(this, 0);
+
+	if (!isPlayer)
+	{
+		StatActors.Add(GetOwner());
+	}
 	
 }
 
@@ -132,22 +139,29 @@ void UStatsComponent::SetTeam(int32 NewTeam)
 	Team = NewTeam;
 }
 
-void UStatsComponent::Damage(float Damage)
+void UStatsComponent::Damage(float Damage, UStatsComponent* OtherStats)
 {
 	if (bIsAlive)
 	{
 		float DamageDealt = Damage;
 
+
 		if (Armor->bIsActive)
 		{
-			DamageDealt -= Armor->Value;
+			DamageDealt /= 1 + ((Armor->Value) / 20);
 		}
-
-		OutgoingDamageModifier[1];
 
 		if (IncomingDamageModifier->bIsActive)
 		{
-			DamageDealt *= IncomingDamageModifier->Value;
+			DamageDealt *= IncomingDamageModifier->GetValue();
+		}
+		
+		if (OtherStats)
+		{
+			if (OtherStats->OutgoingDamageModifier->bIsActive)
+			{
+				DamageDealt *= OtherStats->OutgoingDamageModifier->GetValue();
+			}
 		}
 
 		if (DamageDealt < 0)

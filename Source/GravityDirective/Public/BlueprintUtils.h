@@ -35,4 +35,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Helper")
 	static FString GetStatName(EStatVariant Stat);
 
+	UFUNCTION(BlueprintCallable, Category = "Helper")
+	static float Round(float in);
+
+	UFUNCTION(BlueprintCallable, Category = "Helper")
+	static bool IsOnSameTeam(int Team1, int Team2);
+
 };

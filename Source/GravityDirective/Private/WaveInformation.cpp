@@ -55,6 +55,7 @@ TArray<FWaveEnemy> UWaveInformation::GetWaveEnemies(int WaveNumber, int Subwave,
 
             instanceProfile.EnemyType = Enemy.EnemyType;
             instanceProfile.Level = Enemy.StartingLevel + (DeltaWave / Enemy.WavesPerLevelIncrease);
+            instanceProfile.EnemySlotsConsumed = Enemy.EnemySlotsConsumed;
 
             if (Enemy.bUseWeight)
             {
@@ -80,7 +81,7 @@ TArray<FWaveEnemy> UWaveInformation::GetWaveEnemies(int WaveNumber, int Subwave,
                 }
                 instanceProfile.Weight = -1;
                 
-                CurrentEnemies += instanceProfile.Count;
+                CurrentEnemies += instanceProfile.Count * Enemy.EnemySlotsConsumed;
             }
 
 
@@ -111,8 +112,8 @@ TArray<FWaveEnemy> UWaveInformation::GetWaveEnemies(int WaveNumber, int Subwave,
 
         if (Enemy.Weight > 0)
         {
-            Enemy.Count = EnemiesToSplit * (Enemy.Weight / TotalWeight);
-            CurrentEnemies += Enemy.Count;
+            Enemy.Count = (EnemiesToSplit * (Enemy.Weight / TotalWeight)) / Enemy.EnemySlotsConsumed;
+            CurrentEnemies += Enemy.Count * Enemy.EnemySlotsConsumed;
 
             if (HighestWeightedEnemy.Weight < Enemy.Weight)
             {
@@ -125,7 +126,7 @@ TArray<FWaveEnemy> UWaveInformation::GetWaveEnemies(int WaveNumber, int Subwave,
     }
 
     // Make any corrections to the enemy with the most weight
-    HighestWeightedEnemy.Count += EnemiesToSplit - CurrentEnemies;
+    HighestWeightedEnemy.Count += (EnemiesToSplit - CurrentEnemies) / HighestWeightedEnemy.EnemySlotsConsumed;
     if (HighestWeightedEnemy.Count < 0) HighestWeightedEnemy.Count = 0;
 
     ViableEnemies[highestWeightedEnemyIndex] = HighestWeightedEnemy;
@@ -133,11 +134,14 @@ TArray<FWaveEnemy> UWaveInformation::GetWaveEnemies(int WaveNumber, int Subwave,
     TArray<FWaveEnemy> Enemies;
     for (int i = 0; i < ViableEnemies.Num(); i++)
     {
-        FWaveEnemy Enemy;
-        Enemy.EnemyType = ViableEnemies[i].EnemyType;
-        Enemy.Count = ViableEnemies[i].Count;
-        Enemy.Level = ViableEnemies[i].Level;
-        Enemies.Add(Enemy);
+        if (ViableEnemies[i].Count > 0)
+        {
+            FWaveEnemy Enemy;
+            Enemy.EnemyType = ViableEnemies[i].EnemyType;
+            Enemy.Count = ViableEnemies[i].Count;
+            Enemy.Level = ViableEnemies[i].Level;
+            Enemies.Add(Enemy);
+        }
     }
 
     return Enemies;
